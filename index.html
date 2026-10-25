@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I.H4TE.U Portfolio</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        oled: '#08080a',
+                        charcoal: '#0e0e12',
+                        neonPurple: '#a855f7',
+                        neonCyan: '#06b6d4',
+                        neonRose: '#f43f5e',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 16s linear infinite',
+                        'pulse-glow': 'pulseGlow 4s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.6, transform: 'scale(1)' },
+                            '50%': { opacity: 1, transform: 'scale(1.03)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- GSAP & ScrollTrigger CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Scrollbar & Global Polish */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08080a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a855f7;
+        }
+
+        body {
+            background-color: #08080a;
+            color: #f4f4f5;
+            overflow-x: hidden;
+        }
+
+        /* Neon Glow Utilities */
+        .glow-purple {
+            box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.5), inset 0 0 15px -5px rgba(168, 85, 247, 0.3);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.5), inset 0 0 15px -5px rgba(6, 182, 212, 0.3);
+        }
+        .glow-rose {
+            box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.55), inset 0 0 15px -5px rgba(244, 63, 94, 0.35);
+        }
+
+        /* Rotating Conic Gradient Border for Hero Avatar */
+        .conic-neon-ring {
+            background: conic-gradient(from 0deg, #f43f5e, #a855f7, #06b6d4, #a855f7, #f43f5e);
+        }
+
+        /* Glassmorphism Card */
+        .glass-panel {
+            background: rgba(14, 14, 18, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Staggered Square Buttons Custom Hover */
+        .nav-cube {
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .nav-cube:hover {
+            transform: translateY(-6px) scale(1.06);
+        }
+
+        /* Curved SVG Text Styling */
+        .curved-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            fill: #ffffff;
+            text-shadow: 0 0 15px rgba(244, 63, 94, 0.8);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-neonRose selection:text-white relative">
+
+    <!-- ==========================================
+         1. AMBIENT LUMINOUS DUST CANVAS
+    =========================================== -->
+    <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Ambient Background Color Orbs -->
+    <div class="fixed top-[-15%] left-[-10%] w-[500px] h-[500px] rounded-full bg-neonPurple/10 blur-[140px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-15%] right-[-10%] w-[550px] h-[550px] rounded-full bg-neonRose/10 blur-[150px] pointer-events-none z-0"></div>
+    <div class="fixed top-[40%] left-[45%] w-[400px] h-[400px] rounded-full bg-neonCyan/5 blur-[130px] pointer-events-none z-0"></div>
+
+    <!-- ==========================================
+         2. MORPHING FLOATING STICKY NAVBAR
+         (Full-width flex centering wrapper fixes mobile offset)
+    =========================================== -->
+    <header id="floating-navbar" class="fixed top-4 sm:top-5 inset-x-0 z-40 flex justify-center px-3 sm:px-6 pointer-events-none opacity-0 -translate-y-8 transition-none">
+        <nav class="glass-panel pointer-events-auto px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2.5 sm:gap-6 shadow-2xl shadow-black/80 border border-white/15 max-w-full">
+            <!-- Brand Logo (Compact dot on mobile, full text on sm+) -->
+            <a href="#hero" class="flex items-center gap-2 group shrink-0">
+                <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neonRose group-hover:bg-neonCyan transition-colors shadow-[0_0_12px_#f43f5e]"></span>
+                <span class="font-display font-bold tracking-wider text-xs sm:text-base text-white hidden sm:inline">I.H3TE.U</span>
+            </a>
+
+            <div class="h-4 w-[1px] bg-white/15 shrink-0"></div>
+
+            <!-- Centered Navigation Links -->
+            <ul class="flex items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-sm font-medium text-zinc-300 whitespace-nowrap">
+                <li>
+                    <a href="#hero" class="hover:text-white transition-colors flex items-center gap-1 py-1">
+                        <span class="text-[9px] sm:text-[10px] font-mono text-neonRose hidden xs:inline">00</span>
+                        <span data-i18n="nav.home">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#works" class="hover:text-neonCyan transition-colors flex items-center gap-1 py-1">
+                        <span class="text-[9px] sm:text-[10px] font-mono text-neonCyan hidden xs:inline">01</span>
+                        <span data-i18n="nav.works">Works</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#about" class="hover:text-neonPurple transition-colors flex items-center gap-1 py-1">
+                        <span class="text-[9px] sm:text-[10px] font-mono text-neonPurple hidden xs:inline">02</span>
+                        <span data-i18n="nav.about">About</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#contact" class="hover:text-neonRose transition-colors flex items-center gap-1 py-1">
+                        <span class="text-[9px] sm:text-[10px] font-mono text-neonRose hidden xs:inline">04</span>
+                        <span data-i18n="nav.contact">Contact</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="h-4 w-[1px] bg-white/15 shrink-0"></div>
+
+            <!-- Language Switcher Dropdown in Sticky Navbar -->
+            <div class="relative shrink-0" data-lang-dropdown>
+                <button 
+                    type="button" 
+                    onclick="toggleLangMenu('nav-lang-menu')" 
+                    aria-label="Switch Language"
+                    class="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-[10px] sm:text-xs font-mono text-zinc-200 transition-colors cursor-pointer">
+                    <i data-lucide="globe" class="w-3 h-3 text-neonCyan"></i>
+                    <span class="current-lang-label font-bold">EN</span>
+                    <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-400"></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="nav-lang-menu" class="lang-menu-popup hidden absolute right-0 mt-2.5 w-36 glass-panel rounded-2xl p-1.5 border border-white/20 shadow-2xl z-50">
+                    <button type="button" onclick="setLanguage('en')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-white" data-lang-code="en">
+                        <span>English</span>
+                        <span class="text-[10px] text-neonCyan font-bold">EN</span>
+                    </button>
+                    <button type="button" onclick="setLanguage('vi')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="vi">
+                        <span>Tiếng Việt</span>
+                        <span class="text-[10px] text-neonRose font-bold">VI</span>
+                    </button>
+                    <button type="button" onclick="setLanguage('jp')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="jp">
+                        <span>日本語</span>
+                        <span class="text-[10px] text-neonPurple font-bold">JP</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ==========================================
+         3. HERO SECTION (WIREFRAME 3 ALIGNED)
+    =========================================== -->
+    <section id="hero" class="relative z-10 min-h-screen w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-8 sm:pt-12 pb-20 flex flex-col justify-between">
+        
+        <!-- Top Status Bar + Hero Language Switcher -->
+        <div class="flex items-center justify-between gap-2 text-xs font-mono text-zinc-400">
+            <div class="flex items-center gap-2.5 glass-panel px-3 sm:px-3.5 py-1.5 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 absolute"></span>
+                <span data-i18n="hero.status" class="text-[10px] sm:text-xs tracking-tight sm:tracking-normal">COMMISSIONS OPEN // Q4 2026</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <span data-i18n="hero.version" class="hidden md:inline-block tracking-widest uppercase text-zinc-500">PORTFOLIO VER 3.0 // ANIME & STYLIZED</span>
+
+                <!-- Hero Top-Right Language Switcher -->
+                <div class="relative" data-lang-dropdown>
+                    <button 
+                        type="button" 
+                        onclick="toggleLangMenu('hero-lang-menu')" 
+                        class="glass-panel px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-mono text-zinc-200 hover:border-neonCyan/50 transition-colors cursor-pointer">
+                        <i data-lucide="languages" class="w-3.5 h-3.5 text-neonCyan"></i>
+                        <span class="current-lang-label font-bold">EN</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-400"></i>
+                    </button>
+
+                    <div id="hero-lang-menu" class="lang-menu-popup hidden absolute right-0 mt-2 w-40 glass-panel rounded-2xl p-1.5 border border-white/20 shadow-2xl z-50">
+                        <div class="px-2.5 py-1 text-[10px] font-mono uppercase text-zinc-500 border-b border-white/10 mb-1">
+                            Select Language
+                        </div>
+                        <button type="button" onclick="setLanguage('en')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-white" data-lang-code="en">
+                            <span>English</span>
+                            <span class="text-[10px] text-neonCyan font-bold">EN</span>
+                        </button>
+                        <button type="button" onclick="setLanguage('vi')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="vi">
+                            <span>Tiếng Việt</span>
+                            <span class="text-[10px] text-neonRose font-bold">VI</span>
+                        </button>
+                        <button type="button" onclick="setLanguage('jp')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="jp">
+                            <span>日本語</span>
+                            <span class="text-[10px] text-neonPurple font-bold">JP</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Hero Grid (Matches Wireframe 3) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center my-auto py-10 sm:py-12">
+            
+            <!-- Left Column: Big Typography & Intro -->
+            <div class="lg:col-span-6 space-y-8 text-center lg:text-left flex flex-col items-center lg:items-start">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neonRose/10 border border-neonRose/30 text-neonRose text-xs font-mono uppercase tracking-widest">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span data-i18n="hero.badge">2D Character Artist & Illustrator</span>
+                </div>
+
+                <h1 class="font-display text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.06] text-white">
+                    I.H4TE.U <br/>
+                    <span data-i18n="hero.titleAccent" class="text-transparent bg-clip-text bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan">
+                        / CONCEPT &amp; CHARACTER ART
+                    </span>
+                </h1>
+
+                <p data-i18n="hero.desc" class="text-zinc-300 text-base sm:text-xl leading-relaxed max-w-xl font-normal">
+                    Crafting expressive anime-inspired characters, dynamic silhouettes, and luminous visual storytelling with surgical line work.
+                </p>
+
+                <!-- Quick Stats / Badges -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-2 text-sm text-zinc-400">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="pen-tool" class="w-4 h-4 text-neonCyan"></i>
+                        <span data-i18n="hero.stat1">Stylized Anatomy</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="layers" class="w-4 h-4 text-neonPurple"></i>
+                        <span data-i18n="hero.stat2">Key Visual Illustration</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="zap" class="w-4 h-4 text-neonRose"></i>
+                        <span data-i18n="hero.stat3">Character Sheets</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Large Circular Hero Artwork + Centered Interactive Cubes on Mobile -->
+            <div class="lg:col-span-6 flex flex-col items-center lg:items-end justify-center relative w-full">
+                
+                <!-- Large Circular Avatar / Hero Artwork -->
+                <div class="relative group w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 flex items-center justify-center">
+                    <!-- Rotating Glow Ring -->
+                    <div class="absolute -inset-2 rounded-full conic-neon-ring opacity-75 blur-md animate-spin-slow group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute -inset-1 rounded-full conic-neon-ring animate-spin-slow"></div>
+                    
+                    <!-- Main Circular Image Frame -->
+                    <div class="relative w-full h-full rounded-full overflow-hidden bg-charcoal border-4 border-oled z-10">
+                        <img 
+                            src="https://scontent.fhan16-1.fna.fbcdn.net/v/t39.30808-6/547107157_24680810368180354_4836026596997869387_n.jpg?stp=dst-jpg_tt6&cstp=mx736x736&ctp=s736x736&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHACXSRfz1OfuVDi0nOX3aYZDpeMmFzQAJkOl4yYXNAAjNcAnPmBAeQqxe51m-jlvD_dLcGXii27mAvEh_RM_qH&_nc_ohc=UKul4qDYbh0Q7kNvwGHpYGi&_nc_oc=AdrTdO2O8zts-Uj-1GANNSdlG0CrqX575NWkCmwA89HOuqochYH4Xblev2SMCB-Sv-7GugmPTEo1Y4_VCfd0nIpU&_nc_zt=23&_nc_ht=scontent.fhan16-1.fna&_nc_gid=m0L-j9pGpHkuox9rXo5JCA&_nc_ss=7b2a8&oh=00_AQNB0GppsE5yLJC8eBgqChj2YDq1vVg9n0zrFfiMhFfqcw&oe=6AE3E3DB" 
+                            alt="Hero Illustration Avatar" 
+                            onerror="this.src='https://placehold.co/600x600/18181b/f43f5e?text=Hero+Artwork'"
+                            class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <!-- Subtle Inner Vignette & Label -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-oled/80 via-transparent to-transparent flex items-end justify-center pb-6">
+                           
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Staggered Interactive Square Blocks (Centered horizontally on mobile with mx-auto) -->
+                <div id="hero-cubes-container" class="relative w-full max-w-[340px] sm:max-w-[440px] h-[250px] sm:h-[290px] mt-8 mx-auto lg:mx-0">
+                    
+                    <!-- Cube 3: Medium Square (Top-Left of cluster) - Social Links -->
+                    <button 
+                        type="button"
+                        onclick="toggleSocialDrawer()"
+                        aria-label="Social Links"
+                        class="nav-cube group absolute left-[4%] sm:left-[10%] top-[6%] w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-neonRose/90 to-neonPurple/90 p-[1px] glow-purple z-20 cursor-pointer text-left">
+                        <div class="w-full h-full bg-charcoal/90 hover:bg-neonRose/20 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="font-display text-xl sm:text-2xl font-bold text-white">3</span>
+                                <i data-lucide="share-2" class="w-4 h-4 text-neonRose group-hover:rotate-12 transition-transform"></i>
+                            </div>
+                            <div>
+                                <p data-i18n="cube.social" class="text-[11px] sm:text-xs font-semibold text-white leading-tight">Social Links</p>
+                                <p class="text-[9px] text-zinc-400 font-mono">X / Pixiv / FB</p>
+                            </div>
+                        </div>
+                        <span class="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded bg-white text-oled font-semibold text-[11px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                            Open Social Hub
+                        </span>
+                    </button>
+
+                    <!-- Cube 4: Smallest Square (Top-Center-Right of cluster) - Contact / Inquiries -->
+                    <a 
+                        href="#contact"
+                        aria-label="Contact and Commissions"
+                        class="nav-cube group absolute left-[43%] sm:left-[45%] top-[2%] w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-neonRose to-amber-500 p-[1px] glow-rose z-20 cursor-pointer">
+                        <div class="w-full h-full bg-charcoal/90 hover:bg-neonRose/25 backdrop-blur-md rounded-xl p-2.5 flex flex-col justify-between transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="font-display text-base sm:text-lg font-bold text-white">4</span>
+                                <i data-lucide="mail" class="w-3.5 h-3.5 text-neonRose"></i>
+                            </div>
+                            <p data-i18n="cube.contact" class="text-[10px] font-semibold text-white truncate">Contact</p>
+                        </div>
+                        <span class="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded bg-neonRose text-white font-semibold text-[11px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                            Commissions &amp; Inquiries
+                        </span>
+                    </a>
+
+                    <!-- Cube 2: Large Square (Bottom-Left of cluster) - About Me -->
+                    <a 
+                        href="#about"
+                        aria-label="About Me Section"
+                        class="nav-cube group absolute left-[8%] sm:left-[14%] bottom-[2%] w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-neonRose via-neonPurple to-neonCyan p-[1px] glow-rose z-20 cursor-pointer">
+                        <div class="w-full h-full bg-charcoal/90 hover:bg-neonPurple/20 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="font-display text-2xl sm:text-3xl font-bold text-white">2</span>
+                                <i data-lucide="user-check" class="w-5 h-5 text-neonPurple group-hover:scale-110 transition-transform"></i>
+                            </div>
+                            <div>
+                                <p data-i18n="cube.about" class="text-xs sm:text-sm font-bold text-white">About Me</p>
+                                <p data-i18n="cube.aboutSub" class="text-[10px] text-zinc-400 font-mono">Skills &amp; Process</p>
+                            </div>
+                        </div>
+                        <span class="pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded bg-neonPurple text-white font-semibold text-[11px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                            Artist Bio &amp; Workflow
+                        </span>
+                    </a>
+
+                    <!-- Cube 1: Largest Primary Square (Bottom-Right of cluster) - Gallery / Works -->
+                    <a 
+                        href="#works"
+                        aria-label="Gallery and Works"
+                        class="nav-cube group absolute right-[2%] sm:right-[4%] bottom-[12%] w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-br from-neonRose via-pink-500 to-neonCyan p-[1.5px] glow-rose z-20 cursor-pointer">
+                        <div class="w-full h-full bg-gradient-to-br from-neonRose/85 to-rose-700/90 hover:from-neonRose hover:to-neonPurple backdrop-blur-md rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between transition-all">
+                            <div class="flex items-center justify-between">
+                                <span class="font-display text-3xl sm:text-4xl font-bold text-white">1</span>
+                                <div class="w-8 h-8 rounded-full bg-black/25 flex items-center justify-center group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+                                    <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <span data-i18n="cube.explore" class="text-[10px] font-mono uppercase tracking-widest text-rose-100 block">Explore</span>
+                                <p data-i18n="cube.works" class="text-sm sm:text-base font-extrabold text-white leading-tight">Gallery / Works</p>
+                            </div>
+                        </div>
+                        <span class="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 px-3 py-1 rounded bg-neonCyan text-oled font-bold text-[11px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                            View Masterpieces
+                        </span>
+                    </a>
+
+                    <!-- Decorative connecting cyber lines behind cubes -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30 z-0" viewBox="0 0 400 280">
+                        <line x1="95" y1="70" x2="205" y2="45" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4 4"/>
+                        <line x1="95" y1="70" x2="115" y2="210" stroke="#a855f7" stroke-width="1" stroke-dasharray="4 4"/>
+                        <line x1="115" y1="210" x2="310" y2="180" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4 4"/>
+                        <line x1="205" y1="45" x2="310" y2="180" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4 4"/>
+                    </svg>
+                </div>
+
+                <!-- Quick Social Drawer (Triggered by Cube #3) -->
+                <div id="hero-social-drawer" class="hidden w-full max-w-[420px] mt-3 mx-auto lg:mx-0 glass-panel rounded-2xl p-4 border border-neonPurple/40 glow-purple transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-mono uppercase tracking-wider text-neonPurple flex items-center gap-1.5">
+                            <i data-lucide="radio" class="w-3.5 h-3.5"></i> Official Artist Networks
+                        </span>
+                        <button onclick="toggleSocialDrawer()" class="text-zinc-400 hover:text-white">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-semibold">
+                        <a href="https://www.facebook.com/fb.hennessy" target="_blank" rel="noopener noreferrer" onclick="showToast('Opening Facebook Profile...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonCyan/20 hover:text-neonCyan border border-white/10 transition-all">
+                            <i data-lucide="palette" class="w-3.5 h-3.5"></i> Facebook
+                        </a>
+                        <a href="#contact" onclick="showToast('Opening X (Twitter) Feed...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonPurple/20 hover:text-neonPurple border border-white/10 transition-all">
+                            <i data-lucide="twitter" class="w-3.5 h-3.5"></i> X / Twitter
+                        </a>
+                        <a href="#contact" onclick="showToast('Opening Pixiv Illustrations...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonRose/20 hover:text-neonRose border border-white/10 transition-all">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Pixiv
+                        </a>
+                        <a href="#contact" onclick="showToast('Opening Instagram Reels...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-pink-500/20 hover:text-pink-400 border border-white/10 transition-all">
+                            <i data-lucide="instagram" class="w-3.5 h-3.5"></i> Instagram
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom-Left Copyright & Scroll Indicator -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 text-xs text-zinc-400">
+            <p data-i18n="hero.rights" class="font-mono">© 2026 I.H4TE.U. All rights reserved.</p>
+            <a href="#about" class="inline-flex items-center gap-2 text-zinc-300 hover:text-neonCyan transition-colors group">
+                <span data-i18n="hero.scroll" class="font-mono uppercase tracking-widest text-[11px]">Scroll to synchronize</span>
+                <i data-lucide="chevrons-down" class="w-4 h-4 text-neonCyan animate-bounce"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         4. ABOUT ME SECTION (WIREFRAME 1 & 2 ALIGNED)
+    =========================================== -->
+    <section id="about" class="relative z-10 py-24 sm:py-32 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 border-t border-white/5">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            
+            <!-- Left Column: Circular Avatar with Curved "About me" SVG Text + Artist Bio -->
+            <div class="lg:col-span-5 flex flex-col items-center lg:items-start">
+                
+                <!-- Avatar + Curved SVG Text Wrapper -->
+                <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center mb-6">
+                    
+                    <!-- Circular Avatar Image -->
+                    <div class="w-52 h-52 sm:w-60 sm:h-60 rounded-full overflow-hidden border-2 border-neonRose/60 glow-rose relative z-10 bg-charcoal">
+                        <img 
+                            src="https://scontent.fhan16-1.fna.fbcdn.net/v/t39.30808-6/547107157_24680810368180354_4836026596997869387_n.jpg?stp=dst-jpg_tt6&cstp=mx736x736&ctp=s736x736&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHACXSRfz1OfuVDi0nOX3aYZDpeMmFzQAJkOl4yYXNAAjNcAnPmBAeQqxe51m-jlvD_dLcGXii27mAvEh_RM_qH&_nc_ohc=UKul4qDYbh0Q7kNvwGHpYGi&_nc_oc=AdrTdO2O8zts-Uj-1GANNSdlG0CrqX575NWkCmwA89HOuqochYH4Xblev2SMCB-Sv-7GugmPTEo1Y4_VCfd0nIpU&_nc_zt=23&_nc_ht=scontent.fhan16-1.fna&_nc_gid=m0L-j9pGpHkuox9rXo5JCA&_nc_ss=7b2a8&oh=00_AQNB0GppsE5yLJC8eBgqChj2YDq1vVg9n0zrFfiMhFfqcw&oe=6AE3E3DB" 
+                            alt="Artist Avatar" 
+                            onerror="this.src='https://placehold.co/500x500/ef4444/ffffff?text=Avatar'"
+                            class="w-full h-full object-cover"
+                        />
+                    </div>
+
+                    <!-- Curved SVG Text "About me" wrapping Top-Right edge of Avatar -->
+                    <svg viewBox="0 0 300 300" class="absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible">
+                        <defs>
+                            <path id="aboutCurvePath" d="M 150, 150 m -122, 0 a 122,122 0 1,1 244,0 a 122,122 0 1,1 -244,0" />
+                        </defs>
+                        <text class="curved-text text-[28px] sm:text-[30px]">
+                            <textPath href="#aboutCurvePath" startOffset="23%">
+                                About me
+                            </textPath>
+                        </text>
+                    </svg>
+
+                    <!-- Decorative Orbit Ring -->
+                    <div class="absolute inset-6 rounded-full border border-dashed border-white/15 pointer-events-none animate-spin-slow"></div>
+                </div>
+
+                <!-- Artist Name & Title -->
+                <div class="text-center lg:text-left w-full space-y-4">
+                    <h2 class="font-display text-2xl sm:text-3xl font-bold text-white leading-snug">
+                        <span data-i18n="about.greeting">Hi, I’m</span> <span class="text-neonRose">I.H4TE.U</span> <br/>
+                        <span data-i18n="about.role" class="text-zinc-200 font-semibold text-xl sm:text-2xl">— 2D Character Artist &amp; Illustrator</span>
+                    </h2>
+
+                    <hr class="border-t-2 border-white/80 w-full my-4" />
+
+                    <p data-i18n="about.intro" class="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                        I specialize in stylized character art, anime-inspired design, and expressive visual storytelling. Passionate about bringing ideas to life through strong fundamentals, clean lines, and dynamic compositions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Column: Narrative Philosophy + Interactive Bullet Points Tabs -->
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-8 lg:pt-6">
+                
+                <!-- Narrative Paragraphs -->
+                <div class="space-y-5 text-zinc-200 text-base sm:text-lg leading-relaxed">
+                    <p data-i18n="about.p1">
+                        Art has always been my way of exploring new worlds. My work centers on character design—focusing on personality, anatomy, and costume details that give each figure a distinct presence and story.
+                    </p>
+                    <p data-i18n="about.p2" class="text-zinc-400">
+                        I treat every piece as a balance between disciplined fundamentals (construction, perspective, and form) and personal creative style. I am continuously refining my craft, studying visual narratives, and pushing myself to deliver polished, production-ready artwork.
+                    </p>
+                </div>
+
+                <!-- Interactive Bullet Points Tabs System -->
+                <div class="space-y-5 pt-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-display text-xl sm:text-2xl font-bold text-white tracking-wide flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-neonCyan shadow-[0_0_10px_#06b6d4]"></span>
+                            <span data-i18n="about.bulletHeader">Bullet Points</span>
+                        </h3>
+                        <span data-i18n="about.clickHint" class="text-xs font-mono text-zinc-400">CLICK TAB TO INSPECT</span>
+                    </div>
+
+                    <!-- 3 Pill Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5" role="tablist">
+                        <button 
+                            type="button"
+                            onclick="switchAboutTab('skills')"
+                            id="tab-btn-skills"
+                            class="about-tab-btn group text-left px-5 py-4 rounded-2xl font-display font-bold text-base sm:text-lg transition-all duration-300 bg-white text-oled shadow-[0_0_25px_rgba(255,255,255,0.35)] flex items-center justify-between">
+                            <span data-i18n="about.tabSkills">Core skills</span>
+                            <i data-lucide="sliders" class="w-4 h-4 opacity-80"></i>
+                        </button>
+
+                        <button 
+                            type="button"
+                            onclick="switchAboutTab('software')"
+                            id="tab-btn-software"
+                            class="about-tab-btn group text-left px-5 py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base transition-all duration-300 glass-panel text-white hover:border-neonCyan/60 flex items-center justify-between">
+                            <span data-i18n="about.tabSoftware">Software &amp; Hardware</span>
+                            <i data-lucide="cpu" class="w-4 h-4 text-neonCyan opacity-80"></i>
+                        </button>
+
+                        <button 
+                            type="button"
+                            onclick="switchAboutTab('process')"
+                            id="tab-btn-process"
+                            class="about-tab-btn group text-left px-5 py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base transition-all duration-300 glass-panel text-white hover:border-neonPurple/60 flex items-center justify-between">
+                            <span data-i18n="about.tabProcess">Working Process</span>
+                            <i data-lucide="git-branch" class="w-4 h-4 text-neonPurple opacity-80"></i>
+                        </button>
+                    </div>
+
+                    <!-- Tab Content Display Box -->
+                    <div id="about-tab-card" class="relative rounded-3xl p-6 sm:p-8 bg-white/95 text-oled shadow-2xl border-2 border-neonCyan/40 transition-all duration-300 min-h-[240px] flex flex-col justify-center">
+                        
+                        <!-- Tab 1: Core Skills -->
+                        <div id="tab-panel-skills" class="about-tab-panel space-y-4">
+                            <div class="flex items-center justify-between border-b border-zinc-200 pb-3">
+                                <h4 data-i18n="about.skillsTitle" class="font-display text-xl sm:text-2xl font-extrabold text-oled">Core Skills:</h4>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-neonPurple/15 text-neonPurple">01 / FUNDAMENTALS</span>
+                            </div>
+                            <ul class="space-y-3 text-base sm:text-lg font-medium text-zinc-800">
+                                <li class="flex items-start gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-neonRose shrink-0 mt-1"></i>
+                                    <span data-i18n="about.skill1">Character Concept &amp; Design (Silhouette, Costume &amp; Expression Sheets)</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-neonPurple shrink-0 mt-1"></i>
+                                    <span data-i18n="about.skill2">Digital Drawing &amp; Inking (Surgical Line Art &amp; Dynamic Weight)</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-neonCyan shrink-0 mt-1"></i>
+                                    <span data-i18n="about.skill3">Anatomical Construction &amp; 3D Perspective Projection</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i data-lucide="hand-metal" class="w-5 h-5 text-blue-600 shrink-0 mt-1 animate-bounce"></i>
+                                    <span data-i18n="about.skill4" class="font-bold text-oled">Color Theory, Lighting &amp; Cel/Stylized Rendering</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Tab 2: Software & Hardware -->
+                        <div id="tab-panel-software" class="about-tab-panel hidden space-y-4">
+                            <div class="flex items-center justify-between border-b border-zinc-200 pb-3">
+                                <h4 data-i18n="about.softwareTitle" class="font-display text-xl sm:text-2xl font-extrabold text-oled">Software &amp; Hardware Arsenal:</h4>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-neonCyan/20 text-cyan-900">02 / TOOLKIT</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                                <div class="p-4 rounded-2xl bg-zinc-100 border border-zinc-200">
+                                    <p class="text-xs font-mono uppercase tracking-wider text-neonPurple font-bold mb-2">Primary Software</p>
+                                    <ul class="space-y-2 text-sm sm:text-base font-semibold text-zinc-800">
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-neonPurple"></span> Clip Studio Paint EX</li>
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-neonCyan"></span> Adobe Photoshop CC</li>
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-neonRose"></span> IbisPaint X (Mobile Sketching)</li>
+                                    </ul>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-zinc-100 border border-zinc-200">
+                                    <p class="text-xs font-mono uppercase tracking-wider text-neonRose font-bold mb-2">Studio Hardware</p>
+                                    <ul class="space-y-2 text-sm sm:text-base font-semibold text-zinc-800">
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-neonRose"></span> XP-Pen Artist Pro Pen Display</li>
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-neonCyan"></span> Custom Color-Calibrated Workstation PC</li>
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-neonPurple"></span> TourBox Elite Macro Controller</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: Working Process -->
+                        <div id="tab-panel-process" class="about-tab-panel hidden space-y-4">
+                            <div class="flex items-center justify-between border-b border-zinc-200 pb-3">
+                                <h4 data-i18n="about.processTitle" class="font-display text-xl sm:text-2xl font-extrabold text-oled">4-Stage Production Pipeline:</h4>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-neonRose/20 text-rose-900">03 / WORKFLOW</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base">
+                                <div class="p-3.5 rounded-xl bg-zinc-100 flex items-start gap-3">
+                                    <span class="px-2 py-0.5 rounded bg-oled text-white font-mono text-xs font-bold">01</span>
+                                    <div>
+                                        <p class="font-bold text-oled">Thumbnail &amp; Construction</p>
+                                        <p class="text-xs text-zinc-600">Loomis head/body blocks &amp; 3D box perspective.</p>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-zinc-100 flex items-start gap-3">
+                                    <span class="px-2 py-0.5 rounded bg-neonPurple text-white font-mono text-xs font-bold">02</span>
+                                    <div>
+                                        <p class="font-bold text-oled">Precision Line Art</p>
+                                        <p class="text-xs text-zinc-600">Clean vector-sharp inking &amp; occlusion hierarchy.</p>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-zinc-100 flex items-start gap-3">
+                                    <span class="px-2 py-0.5 rounded bg-neonCyan text-oled font-mono text-xs font-bold">03</span>
+                                    <div>
+                                        <p class="font-bold text-oled">Base Color &amp; Value Read</p>
+                                        <p class="text-xs text-zinc-600">Harmonious palettes &amp; high-contrast grayscale checks.</p>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-zinc-100 flex items-start gap-3">
+                                    <span class="px-2 py-0.5 rounded bg-neonRose text-white font-mono text-xs font-bold">04</span>
+                                    <div>
+                                        <p class="font-bold text-oled">Lighting, FX &amp; Polish</p>
+                                        <p class="text-xs text-zinc-600">Subsurface scattering, rim light &amp; chromatic bloom.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         5. GALLERY SECTION (PARALLAX & FILTERING)
+    =========================================== -->
+    <section id="works" class="relative z-10 py-24 sm:py-32 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 border-t border-white/5">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+            <div>
+                <div class="inline-flex items-center gap-2 text-neonCyan font-mono text-xs uppercase tracking-widest mb-3">
+                    <span class="w-2 h-2 rounded-full bg-neonCyan"></span>
+                    <span data-i18n="works.badge">01 // ARCHIVE &amp; EXHIBITION</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
+                    <span data-i18n="works.heading1">SELECTED</span> <span data-i18n="works.heading2" class="text-transparent bg-clip-text bg-gradient-to-r from-neonCyan via-neonPurple to-neonRose">CHARACTER WORKS</span>
+                </h2>
+            </div>
+            <p data-i18n="works.desc" class="text-zinc-400 text-sm sm:text-base max-w-md">
+                Click on any illustration to inspect high-resolution brushwork, software breakdown, and concept lore in full-screen view.
+            </p>
+        </div>
+
+        <!-- Category Filter Bar -->
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5 mb-12" role="tablist" aria-label="Artwork category filter">
+            <button 
+                type="button"
+                onclick="filterGallery('all')"
+                data-filter="all"
+                class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan text-white shadow-[0_0_20px_rgba(168,85,247,0.45)] flex items-center gap-2">
+                <span data-i18n="works.filterAll">All Works</span>
+                <span id="count-all" class="px-2 py-0.5 rounded-full bg-black/30 text-[10px] font-mono">8</span>
+            </button>
+
+            <button 
+                type="button"
+                onclick="filterGallery('Original Art')"
+                data-filter="Original Art"
+                class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonRose/60 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-neonRose"></span>
+                <span data-i18n="works.filterOriginal">Original Art</span>
+                <span id="count-original" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono text-zinc-300">2</span>
+            </button>
+
+            <button 
+                type="button"
+                onclick="filterGallery('Fanart')"
+                data-filter="Fanart"
+                class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonPurple/60 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-neonPurple"></span>
+                <span data-i18n="works.filterFanart">Fanart</span>
+                <span id="count-fanart" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono text-zinc-300">2</span>
+            </button>
+
+            <button 
+                type="button"
+                onclick="filterGallery('Commission')"
+                data-filter="Commission"
+                class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonCyan/60 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-neonCyan"></span>
+                <span data-i18n="works.filterCommission">Commission</span>
+                <span id="count-commission" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono text-zinc-300">2</span>
+            </button>
+
+            <button 
+                type="button"
+                onclick="filterGallery('Sketches & Studies')"
+                data-filter="Sketches & Studies"
+                class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-amber-400/60 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span data-i18n="works.filterSketches">Sketches &amp; Studies</span>
+                <span id="count-sketches" class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono text-zinc-300">2</span>
+            </button>
+        </div>
+
+        <!-- Responsive 1 / 2 / 3 Column Gallery Grid -->
+        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8">
+            <!-- Populated dynamically via JS -->
+        </div>
+    </section>
+
+    <!-- ==========================================
+         6. CONTACT & COMMISSIONS SECTION
+    =========================================== -->
+    <section id="contact" class="relative z-10 py-24 sm:py-32 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 border-t border-white/5">
+        <div class="glass-panel rounded-3xl p-8 sm:p-12 lg:p-16 border border-white/15 relative overflow-hidden">
+            <!-- Decorative Glow -->
+            <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-neonPurple/20 blur-3xl pointer-events-none"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neonRose/15 border border-neonRose/30 text-neonRose text-xs font-mono">
+                        <span data-i18n="contact.badge">04 // INQUIRIES &amp; COMMISSIONS</span>
+                    </div>
+                    <h2 data-i18n="contact.heading" class="font-display text-3xl sm:text-5xl font-bold text-white leading-tight">
+                        Let’s Bring Your Character To Life.
+                    </h2>
+                    <p data-i18n="contact.desc" class="text-zinc-300 text-base leading-relaxed">
+                        Available for commercial character design, VTuber model illustration, game key visuals, and private character commissions.
+                    </p>
+
+                    <div class="space-y-3 pt-2 text-sm text-zinc-300">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-neonCyan">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                            </div>
+                            <span class="font-mono">mail.ih4teyou@gmail.com</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-neonPurple">
+                                <i data-lucide="globe" class="w-4 h-4"></i>
+                            </div>
+                            <span data-i18n="contact.timezone">Worldwide Remote // UTC+7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commission Brief Form -->
+                <div class="lg:col-span-6">
+                    <form id="commission-form" 
+                          action="https://formspree.io/f/mbggdkre" 
+                          method="POST" 
+                          onsubmit="handleCommissionSubmit(event)" 
+                          class="space-y-4 bg-oled/70 p-6 sm:p-8 rounded-2xl border border-white/10">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label data-i18n="contact.labelName" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Name / Studio</label>
+                                <input type="text" name="name" required data-i18n-placeholder="contact.placeholderName" placeholder="e.g. Aether Games" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonCyan transition-colors" />
+                            </div>
+                            <div>
+                                <label data-i18n="contact.labelEmail" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Your Email</label>
+                                <input type="email" name="email" required placeholder="you@domain.com" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonCyan transition-colors" />
+                            </div>
+                        </div>
+                        <div>
+                            <label data-i18n="contact.labelType" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Request Type</label>
+                            <select name="commission_type" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonPurple transition-colors">
+                                <option value="Full-Body Character Concept Sheet">Full-Body Character Concept Sheet</option>
+                                <option value="Anime Key Visual / Splash Art">Anime Key Visual / Splash Art</option>
+                                <option value="Half-Body Stylized Illustration">Half-Body Stylized Illustration</option>
+                                <option value="Commercial Studio Contract">Commercial Studio Contract</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label data-i18n="contact.labelMessage" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Description &amp; Details</label>
+                            <textarea name="message" rows="3" required data-i18n-placeholder="contact.placeholderMessage" placeholder="Describe character concept, personality, outfit..." class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonRose transition-colors"></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan text-white font-display font-bold text-sm tracking-wide hover:opacity-95 transition-opacity shadow-lg shadow-neonPurple/25 flex items-center justify-center gap-2 cursor-pointer">
+                            <span data-i18n="contact.submitBtn">Send Commission Request</span>
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         7. PROJECT DETAIL MODAL (FULL-SCREEN)
+    =========================================== -->
+    <div id="artwork-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-xl opacity-0 transition-opacity duration-300">
+        <!-- Modal Backdrop Click to Close -->
+        <div onclick="closeArtworkModal()" class="absolute inset-0 cursor-pointer"></div>
+
+        <!-- Modal Dialog Container -->
+        <div id="artwork-modal-card" class="relative z-10 w-full max-w-5xl glass-panel rounded-3xl overflow-hidden border border-white/20 shadow-2xl transform scale-90 transition-transform duration-300 max-h-[90vh] flex flex-col lg:flex-row">
+            
+            <!-- Close Button -->
+            <button 
+                onclick="closeArtworkModal()" 
+                aria-label="Close modal"
+                class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-oled/80 hover:bg-neonRose text-white border border-white/20 flex items-center justify-center transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Left: High-Res Artwork Preview -->
+            <div class="lg:w-7/12 bg-oled flex items-center justify-center overflow-hidden max-h-[50vh] lg:max-h-[85vh]">
+                <img id="modal-img" src="" alt="Artwork Preview" class="w-full h-full object-cover" />
+            </div>
+
+            <!-- Right: Story, Specs & Software -->
+            <div class="lg:w-5/12 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto space-y-6 bg-charcoal/95">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span id="modal-category" class="px-3 py-1 rounded-full text-xs font-mono uppercase bg-neonPurple/20 text-neonPurple border border-neonPurple/30">
+                            Character Concept
+                        </span>
+                        <span id="modal-year" class="text-xs font-mono text-zinc-400">2026</span>
+                    </div>
+
+                    <h3 id="modal-title" class="font-display text-2xl sm:text-3xl font-bold text-white">
+                        Artwork Title
+                    </h3>
+
+                    <p id="modal-story" class="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                        Artwork lore and creative direction description goes here.
+                    </p>
+
+                    <div class="pt-4 border-t border-white/10 space-y-3">
+                        <div>
+                            <p data-i18n="modal.tools" class="text-xs font-mono uppercase text-zinc-400">Tools &amp; Software</p>
+                            <p id="modal-software" class="text-sm font-semibold text-neonCyan mt-0.5">Clip Studio Paint EX, Photoshop CC</p>
+                        </div>
+                        <div>
+                            <p data-i18n="modal.focus" class="text-xs font-mono uppercase text-zinc-400">Focus Fundamentals</p>
+                            <p id="modal-focus" class="text-sm font-semibold text-white mt-0.5">Dynamic Foreshortening, Rim Lighting, Costume Silhouette</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+                    <button onclick="closeArtworkModal()" data-i18n="modal.close" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-mono uppercase tracking-wider text-white transition-colors">
+                        Close Preview
+                    </button>
+                    <a href="#contact" onclick="closeArtworkModal()" class="px-5 py-2.5 rounded-xl bg-neonRose hover:bg-rose-600 text-xs font-bold uppercase tracking-wider text-white transition-colors flex items-center gap-1.5">
+                        <span data-i18n="modal.request">Request Similar Style</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         8. ARTISTIC BACK-TO-TOP BUTTON
+    =========================================== -->
+    <button 
+        id="back-to-top" 
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        aria-label="Scroll back to top"
+        class="fixed bottom-8 right-8 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full glass-panel border border-neonCyan/40 text-white flex items-center justify-center shadow-lg glow-cyan opacity-0 scale-75 pointer-events-none transition-all duration-300 hover:scale-110 hover:border-neonRose group">
+        <i data-lucide="arrow-up" class="w-5 h-5 text-neonCyan group-hover:text-neonRose group-hover:-translate-y-0.5 transition-all"></i>
+    </button>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast-notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300 glass-panel px-5 py-3 rounded-full border border-neonCyan/50 text-xs sm:text-sm font-medium text-white shadow-2xl flex items-center gap-2.5">
+        <span class="w-2 h-2 rounded-full bg-neonCyan animate-ping"></span>
+        <span id="toast-message">Action completed</span>
+    </div>
+
+    <!-- ==========================================
+         9. JAVASCRIPT APPLICATION LOGIC
+    =========================================== -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // --------------------------------------------------
+        // A. MULTI-LANGUAGE (i18n) ARCHITECTURE
+        // Easy to expand: Simply add new keys or a new language object (e.g., 'kr', 'fr')
+        // --------------------------------------------------
+        const translations = {
+            en: {
+                "nav.home": "Home",
+                "nav.works": "Works",
+                "nav.about": "About",
+                "nav.contact": "Contact",
+                "hero.status": "COMMISSIONS OPEN // Q4 2026",
+                "hero.version": "PORTFOLIO VER 3.0 // ANIME & STYLIZED",
+                "hero.badge": "2D Character Artist & Illustrator",
+                "hero.titleAccent": "/ CONCEPT & CHARACTER ART",
+                "hero.desc": "Crafting expressive anime-inspired characters, dynamic silhouettes, and luminous visual storytelling with surgical line work.",
+                "hero.stat1": "Stylized Anatomy",
+                "hero.stat2": "Key Visual Illustration",
+                "hero.stat3": "Character Sheets",
+                "hero.featuredLabel": "Featured Art // 2026",
+                "hero.rights": "© 2026 I.H4TE.U. All rights reserved.",
+                "hero.scroll": "Scroll to synchronize",
+                "cube.social": "Social Links",
+                "cube.contact": "Contact",
+                "cube.about": "About Me",
+                "cube.aboutSub": "Skills & Process",
+                "cube.explore": "Explore",
+                "cube.works": "Gallery / Works",
+                "about.greeting": "Hi, I’m",
+                "about.role": "— 2D Character Artist & Illustrator",
+                "about.intro": "I specialize in stylized character art, anime-inspired design, and expressive visual storytelling. Passionate about bringing ideas to life through strong fundamentals, clean lines, and dynamic compositions.",
+                "about.p1": "Art has always been my way of exploring new worlds. My work centers on character design—focusing on personality, anatomy, and costume details that give each figure a distinct presence and story.",
+                "about.p2": "I treat every piece as a balance between disciplined fundamentals (construction, perspective, and form) and personal creative style. I am continuously refining my craft, studying visual narratives, and pushing myself to deliver polished, production-ready artwork.",
+                "about.bulletHeader": "Bullet Points",
+                "about.clickHint": "CLICK TAB TO INSPECT",
+                "about.tabSkills": "Core skills",
+                "about.tabSoftware": "Software & Hardware",
+                "about.tabProcess": "Working Process",
+                "about.skillsTitle": "Core Skills:",
+                "about.skill1": "Character Concept & Design (Silhouette, Costume & Expression Sheets)",
+                "about.skill2": "Digital Drawing & Inking (Surgical Line Art & Dynamic Weight)",
+                "about.skill3": "Anatomical Construction & 3D Perspective Projection",
+                "about.skill4": "Color Theory, Lighting & Cel/Stylized Rendering",
+                "about.softwareTitle": "Software & Hardware Arsenal:",
+                "about.processTitle": "4-Stage Production Pipeline:",
+                "works.badge": "01 // ARCHIVE & EXHIBITION",
+                "works.heading1": "SELECTED",
+                "works.heading2": "CHARACTER WORKS",
+                "works.desc": "Click on any illustration to inspect high-resolution brushwork, software breakdown, and concept lore in full-screen view.",
+                "works.filterAll": "All Works",
+                "works.filterOriginal": "Original Art",
+                "works.filterFanart": "Fanart",
+                "works.filterCommission": "Commission",
+                "works.filterSketches": "Sketches & Studies",
+                "works.seeDetails": "See Details",
+                "contact.badge": "04 // INQUIRIES & COMMISSIONS",
+                "contact.heading": "Let’s Bring Your Character To Life.",
+                "contact.desc": "Available for commercial character design, VTuber model illustration, game key visuals, and private character commissions.",
+                "contact.timezone": "Worldwide Remote // UTC+7",
+                "contact.labelName": "Name / Studio",
+                "contact.placeholderName": "e.g. Aether Games",
+                "contact.labelEmail": "Your Email",
+                "contact.labelType": "Request Type",
+                "contact.labelMessage": "Description & Details",
+                "contact.placeholderMessage": "Describe character concept, personality, outfit...",
+                "contact.submitBtn": "Send Commission Request",
+                "modal.tools": "Tools & Software",
+                "modal.focus": "Focus Fundamentals",
+                "modal.close": "Close Preview",
+                "modal.request": "Request Similar Style"
+            },
+            vi: {
+                "nav.home": "Trang chủ",
+                "nav.works": "Tác phẩm",
+                "nav.about": "Giới thiệu",
+                "nav.contact": "Liên hệ",
+                "hero.status": "NHẬN COMMISSION // QUÝ 4 2026",
+                "hero.version": "PORTFOLIO VER 3.0 // ANIME & STYLIZED",
+                "hero.badge": "Họa sĩ Nhân vật 2D & Minh họa",
+                "hero.titleAccent": "/ CONCEPT & THIẾT KẾ NHÂN VẬT",
+                "hero.desc": "Sáng tạo nhân vật phong cách Anime giàu biểu cảm, hình khối năng động và kể chuyện bằng ánh sáng cùng nét vẽ sắc sảo.",
+                "hero.stat1": "Giải phẫu Cách điệu",
+                "hero.stat2": "Minh họa Key Visual",
+                "hero.stat3": "Character Sheets",
+                "hero.featuredLabel": "Tác phẩm Nổi bật // 2026",
+                "hero.rights": "© 2026 I.H4TE.U. All rights reserved.",
+                "hero.scroll": "Cuộn xuống để khám phá",
+                "cube.social": "Mạng xã hội",
+                "cube.contact": "Liên hệ",
+                "cube.about": "Về tôi",
+                "cube.aboutSub": "Kỹ năng & Quy trình",
+                "cube.explore": "Khám phá",
+                "cube.works": "Thư viện / Tranh",
+                "about.greeting": "Xin chào, tôi là",
+                "about.role": "— Họa sĩ Nhân vật 2D & Minh họa",
+                "about.intro": "Tôi chuyên về nghệ thuật nhân vật cách điệu, thiết kế cảm hứng anime và kể chuyện qua hình ảnh. Đam mê hiện thực hóa ý tưởng bằng nền tảng vững chắc, nét vẽ sạch sẽ và bố cục sống động.",
+                "about.p1": "Nghệ thuật luôn là cách tôi khám phá những thế giới mới. Công việc của tôi xoay quanh thiết kế nhân vật—tập trung vào cá tính, giải phẫu và chi tiết trang phục để tạo nên dấu ấn riêng.",
+                "about.p2": "Tôi xem mỗi tác phẩm là sự cân bằng giữa nền tảng kỷ luật (dựng hình, phối cảnh, khối) và phong cách sáng tạo cá nhân. Tôi không ngừng trau dồi kỹ năng để mang tới những tác phẩm hoàn thiện nhất.",
+                "about.bulletHeader": "Điểm Trọng Tâm",
+                "about.clickHint": "CHỌN TAB ĐỂ XEM CHI TIẾT",
+                "about.tabSkills": "Kỹ năng cốt lõi",
+                "about.tabSoftware": "Phần mềm & Thiết bị",
+                "about.tabProcess": "Quy trình làm việc",
+                "about.skillsTitle": "Kỹ Năng Cốt Lõi:",
+                "about.skill1": "Thiết kế & Concept Nhân vật (Silhouette, Trang phục & Biểu cảm)",
+                "about.skill2": "Vẽ Kỹ thuật số & Đi nét (Line Art sắc nét & Nhấn nhá lực nét)",
+                "about.skill3": "Dựng hình Giải phẫu học & Phối cảnh Không gian 3D",
+                "about.skill4": "Lý thuyết Màu sắc, Ánh sáng & Render Cel/Stylized",
+                "about.softwareTitle": "Phần Mềm & Thiết Bị Studio:",
+                "about.processTitle": "Quy Trình Sản Xuất 4 Giai Đoạn:",
+                "works.badge": "01 // LƯU TRỮ & TRIỂN LÃM",
+                "works.heading1": "TÁC PHẨM",
+                "works.heading2": "NHÂN VẬT CHỌN LỌC",
+                "works.desc": "Nhấn vào bất kỳ tác phẩm nào để xem chi tiết nét cọ độ phân giải cao, phần mềm sử dụng và câu chuyện đằng sau.",
+                "works.filterAll": "Tất cả",
+                "works.filterOriginal": "Original Art",
+                "works.filterFanart": "Fanart",
+                "works.filterCommission": "Commission",
+                "works.filterSketches": "Sketches & Studies",
+                "works.seeDetails": "Xem chi tiết",
+                "contact.badge": "04 // HỢP TÁC & COMMISSION",
+                "contact.heading": "Cùng Thổi Hồn Vào Nhân Vật Của Bạn.",
+                "contact.desc": "Nhận thiết kế nhân vật thương mại, minh họa model VTuber, key visual game và commission nhân vật cá nhân.",
+                "contact.timezone": "Làm việc Từ xa Toàn cầu // UTC+7",
+                "contact.labelName": "Tên / Studio",
+                "contact.placeholderName": "VD: Aether Games",
+                "contact.labelEmail": "Email của bạn",
+                "contact.labelType": "Loại yêu cầu",
+                "contact.labelMessage": "Mô tả & Chi tiết",
+                "contact.placeholderMessage": "Mô tả ý tưởng nhân vật, tính cách, trang phục...",
+                "contact.submitBtn": "Gửi Yêu Cầu Commission",
+                "modal.tools": "Công cụ & Phần mềm",
+                "modal.focus": "Kỹ thuật Trọng tâm",
+                "modal.close": "Đóng xem trước",
+                "modal.request": "Đặt vẽ phong cách này"
+            },
+            jp: {
+                "nav.home": "ホーム",
+                "nav.works": "作品一覧",
+                "nav.about": "プロフィール",
+                "nav.contact": "連絡先",
+                "hero.status": "コミッション受付中 // 2026 Q4",
+                "hero.version": "PORTFOLIO VER 3.0 // アニメ＆スタイライズ",
+                "hero.badge": "2Dキャラクターアーティスト＆イラストレーター",
+                "hero.titleAccent": "/ コンセプト＆キャラクターアート",
+                "hero.desc": "精密な線画と鮮やかな色彩で、感情豊かなアニメ風キャラクターとダイナミックなシルエットを描き出します。",
+                "hero.stat1": "スタイライズ解剖学",
+                "hero.stat2": "キービジュアル制作",
+                "hero.stat3": "キャラクター三面図",
+                "hero.featuredLabel": "注目作品 // 2026",
+                "hero.rights": "© 2026 I.H4TE.U. All rights reserved.",
+                "hero.scroll": "スクロールして 탐색",
+                "cube.social": "SNSリンク",
+                "cube.contact": "お問い合わせ",
+                "cube.about": "私について",
+                "cube.aboutSub": "スキルと制作工程",
+                "cube.explore": "探索する",
+                "cube.works": "ギャラリー / 作品",
+                "about.greeting": "こんにちは、",
+                "about.role": "— 2Dキャラクターアーティスト",
+                "about.intro": "スタイライズされたキャラクターデザイン、アニメ風イラスト、視覚的なストーリーテリングを専門としています。確かな基礎と美しい線画でアイデアに命を吹き込みます。",
+                "about.p1": "アートは常に新しい世界を探求する手段です。キャラクターの個性、人体構造、衣装のディテールにこだわり、存在感のある造形を追求しています。",
+                "about.p2": "構造やパースなどの基礎力と、独自のクリエイティブスタイルの両立を大切にしています。常に技術を磨き、商用レベルの完成度を目指しています。",
+                "about.bulletHeader": "スキル＆制作体制",
+                "about.clickHint": "タブをクリックして詳細表示",
+                "about.tabSkills": "コアスキル",
+                "about.tabSoftware": "使用ソフト・機材",
+                "about.tabProcess": "制作プロセス",
+                "about.skillsTitle": "コアスキル:",
+                "about.skill1": "キャラクターコンセプト＆デザイン（シルエット・衣装・表情差分）",
+                "about.skill2": "デジタル作画＆ペン入れ（精密な線画と強弱のコントロール）",
+                "about.skill3": "アナトミー構造＆3Dパースペクティブ投影",
+                "about.skill4": "色彩理論、ライティング＆アニメ塗り/厚塗りレンダリング",
+                "about.softwareTitle": "使用ソフトウェア＆スタジオ機材:",
+                "about.processTitle": "4段階の制作パイプライン:",
+                "works.badge": "01 // アーカイブ＆展示",
+                "works.heading1": "厳選された",
+                "works.heading2": "キャラクター作品",
+                "works.desc": "イラストをクリックすると、高解像度のプレビューや使用ツール、コンセプト背景を全画面で確認できます。",
+                "works.filterAll": "すべて",
+                "works.filterOriginal": "オリジナル",
+                "works.filterFanart": "ファンアート",
+                "works.filterCommission": "コミッション",
+                "works.filterSketches": "スケッチ＆練習",
+                "works.seeDetails": "詳細を見る",
+                "contact.badge": "04 // ご依頼・お問い合わせ",
+                "contact.heading": "あなたのキャラクターに命を吹き込みます。",
+                "contact.desc": "商用キャラクターデザイン、VTuberモデルイラスト、ゲーム用キービジュアル、個人コミッションを受け付けております。",
+                "contact.timezone": "リモート対応可能 // UTC+7",
+                "contact.labelName": "お名前 / スタジオ名",
+                "contact.placeholderName": "例: Aether Games",
+                "contact.labelEmail": "メールアドレス",
+                "contact.labelType": "ご依頼内容",
+                "contact.labelMessage": "詳細・コンセプト",
+                "contact.placeholderMessage": "キャラクターの性格、衣装、希望する雰囲気などをご記入ください...",
+                "contact.submitBtn": "リクエストを送信する",
+                "modal.tools": "使用ツール＆ソフト",
+                "modal.focus": "重点ファンダメンタル",
+                "modal.close": "閉じる",
+                "modal.request": "このスタイルで依頼する"
+            }
+        };
+
+        let currentLang = localStorage.getItem('portfolio_lang') || 'en';
+
+        function toggleLangMenu(menuId) {
+            const targetMenu = document.getElementById(menuId);
+            const allMenus = document.querySelectorAll('.lang-menu-popup');
+            allMenus.forEach(menu => {
+                if (menu.id !== menuId) menu.classList.add('hidden');
+            });
+            targetMenu.classList.toggle('hidden');
+        }
+
+        // Close language dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('[data-lang-dropdown]')) {
+                document.querySelectorAll('.lang-menu-popup').forEach(menu => menu.classList.add('hidden'));
+            }
+        });
+
+        function setLanguage(langCode) {
+            if (!translations[langCode]) return;
+            currentLang = langCode;
+            localStorage.setItem('portfolio_lang', langCode);
+            document.documentElement.lang = langCode;
+
+            const dict = translations[langCode];
+
+            // 1. Update all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+
+            // 2. Update all input/textarea placeholders with data-i18n-placeholder
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key]) {
+                    el.placeholder = dict[key];
+                }
+            });
+
+            // 3. Update language badge labels (EN / VI / JP)
+            document.querySelectorAll('.current-lang-label').forEach(label => {
+                label.textContent = langCode.toUpperCase();
+            });
+
+            // 4. Highlight active language in dropdowns
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                const code = btn.getAttribute('data-lang-code');
+                if (code === langCode) {
+                    btn.classList.add('bg-white/15', 'text-white', 'font-bold');
+                    btn.classList.remove('text-zinc-300');
+                } else {
+                    btn.classList.remove('bg-white/15', 'text-white', 'font-bold');
+                    btn.classList.add('text-zinc-300');
+                }
+            });
+
+            // 5. Re-render gallery cards so "See Details" button translates
+            renderGallery(currentGalleryFilter);
+
+            // 6. Close dropdown menus
+            document.querySelectorAll('.lang-menu-popup').forEach(menu => menu.classList.add('hidden'));
+
+            const langNames = { en: 'English (EN)', vi: 'Tiếng Việt (VI)', jp: '日本語 (JP)' };
+            showToast(`Language: ${langNames[langCode]}`);
+        }
+
+        // --------------------------------------------------
+        // B. GALLERY DATA & RENDERING
+        // --------------------------------------------------
+        const artworksData = [
+            {
+                id: 1,
+                title: "Valkyrie of the Neon Eclipse",
+                category: "Original Art",
+                year: "2026",
+                image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=85",
+                software: "Clip Studio Paint EX • Adobe Photoshop",
+                focus: "Low-Angle Perspective, Cyber Halberd Design & Rim Glow",
+                story: "Personal IP protagonist designed for an original sci-fi anime universe. Focused on contrasting sharp mechanical armor plates against flowing translucent fabric and high-saturation magenta energy."
+            },
+            {
+                id: 2,
+                title: "Aetherial Kitsune Shrine Maiden",
+                category: "Commission",
+                year: "2026",
+                image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=85",
+                software: "Clip Studio Paint EX • XP-Pen Display",
+                focus: "Dynamic Hair Flow, Subsurface Scattering & Color Harmony",
+                story: "Commercial VTuber debut key visual commission. Fuses traditional Japanese shrine motifs with modern stylized cel-shading to guide the viewer's eye directly toward the character's gaze."
+            },
+            {
+                id: 3,
+                title: "Cyberpunk Edgerunner // Lucy & Rebecca",
+                category: "Fanart",
+                year: "2026",
+                image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1200&q=85",
+                software: "Adobe Photoshop CC • IbisPaint X",
+                focus: "Anatomical Twist, Techwear Folds & Chromatic Aberration",
+                story: "Tribute fanart illustration capturing the electric melancholy of Night City. Emphasizes heavy ink line-weight variation to separate foreground silhouettes from the atmospheric neon rain."
+            },
+            {
+                id: 4,
+                title: "Seraphim Protocol // Unit 09",
+                category: "Original Art",
+                year: "2025",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=85",
+                software: "Clip Studio Paint EX",
+                focus: "3D Box Perspective Projection & Hard-Surface Inking",
+                story: "Original mecha-musume character sheet constructed using strict 3-point perspective grids to ensure the floating wing-binders feel weightless yet structurally accurate."
+            },
+            {
+                id: 5,
+                title: "Dynamic Torso & Foreshortening Sheet",
+                category: "Sketches & Studies",
+                year: "2026",
+                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1200&q=85",
+                software: "Clip Studio Paint EX • Pencil Brush",
+                focus: "Loomis Construction, Ribcage/Pelvis Tilt & Gesture Rhythm",
+                story: "Daily anatomical construction and extreme camera angle study sheet. Practicing 3D box forms in space before applying costume layers and line-weight hierarchy."
+            },
+            {
+                id: 6,
+                title: "Starlight Alchemist's Atelier",
+                category: "Commission",
+                year: "2026",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=85",
+                software: "Clip Studio Paint EX • Photoshop CC",
+                focus: "Staging, Props Storytelling & Luminous Particle FX",
+                story: "Private full-scene character illustration commission for an indie light novel cover. Packed with potion flasks, arcane scrolls, and warm ambient bounce lighting."
+            },
+            {
+                id: 7,
+                title: "Raiden Shogun: Musou no Hitotachi",
+                category: "Fanart",
+                year: "2025",
+                image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=85",
+                software: "Clip Studio Paint EX • Photoshop CC",
+                focus: "Lightning FX Slash, High-Contrast Value & Expression",
+                story: "High-energy fanart splash illustration celebrating electro visual effects and dramatic kimono sleeve movement under intense violet rim lighting."
+            },
+            {
+                id: 8,
+                title: "Color Scripting & Drapery Folds Study",
+                category: "Sketches & Studies",
+                year: "2025",
+                image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=85",
+                software: "IbisPaint X • Adobe Photoshop CC",
+                focus: "Tension Points, Ambient Occlusion & Dual-Source Lighting",
+                story: "Focused study exploring how heavy outerwear fabric wraps around dynamic arm movements and how cool cyan shadows transition into warm neon highlights."
+            }
+        ];
+
+        const galleryGrid = document.getElementById('gallery-grid');
+        let currentGalleryFilter = 'all';
+
+        function getCategoryBadgeStyle(category) {
+            switch (category) {
+                case 'Original Art':
+                    return 'border-neonRose/50 text-rose-200 bg-neonRose/20';
+                case 'Fanart':
+                    return 'border-neonPurple/50 text-purple-200 bg-neonPurple/20';
+                case 'Commission':
+                    return 'border-neonCyan/50 text-cyan-200 bg-neonCyan/20';
+                case 'Sketches & Studies':
+                    return 'border-amber-400/50 text-amber-200 bg-amber-500/20';
+                default:
+                    return 'border-white/15 text-zinc-200 bg-oled/75';
+            }
+        }
+
+        function updateCategoryCounts() {
+            document.getElementById('count-all').textContent = artworksData.length;
+            document.getElementById('count-original').textContent = artworksData.filter(a => a.category === 'Original Art').length;
+            document.getElementById('count-fanart').textContent = artworksData.filter(a => a.category === 'Fanart').length;
+            document.getElementById('count-commission').textContent = artworksData.filter(a => a.category === 'Commission').length;
+            document.getElementById('count-sketches').textContent = artworksData.filter(a => a.category === 'Sketches & Studies').length;
+        }
+
+        function renderGallery(filter = 'all') {
+            const filteredArtworks = filter === 'all' 
+                ? artworksData 
+                : artworksData.filter(art => art.category === filter);
+
+            const seeDetailsText = (translations[currentLang] && translations[currentLang]["works.seeDetails"]) || "See Details";
+
+            galleryGrid.innerHTML = filteredArtworks.map((art, index) => `
+                <article 
+                    onclick="openArtworkModal(${art.id})"
+                    data-speed="${index % 2 === 0 ? '0.95' : '1.05'}"
+                    class="gallery-card group relative rounded-3xl overflow-hidden glass-panel border border-white/10 hover:border-neonPurple/60 cursor-pointer transition-all duration-500 flex flex-col">
+                    
+                    <div class="relative aspect-[4/5] w-full overflow-hidden bg-charcoal">
+                        <img 
+                            src="${art.image}" 
+                            alt="${art.title}"
+                            onerror="this.src='https://placehold.co/800x1000/18181b/a855f7?text=Artwork+${art.id}'"
+                            class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
+                        />
+                        <!-- Gradient Overlay on Hover -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-oled via-oled/30 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300"></div>
+
+                        <!-- Top Category Pill -->
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-wider backdrop-blur-md border ${getCategoryBadgeStyle(art.category)}">
+                                ${art.category}
+                            </span>
+                        </div>
+
+                        <!-- Bottom Info & Action -->
+                        <div class="absolute inset-x-0 bottom-0 p-6 flex flex-col justify-end translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                            <p class="text-xs font-mono text-neonCyan mb-1">${art.software}</p>
+                            <h3 class="font-display text-xl sm:text-2xl font-bold text-white mb-4 group-hover:text-neonRose transition-colors">
+                                ${art.title}
+                            </h3>
+                            <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white bg-white/10 group-hover:bg-neonPurple px-4 py-2.5 rounded-xl w-fit backdrop-blur-md transition-colors">
+                                <span>${seeDetailsText}</span>
+                                <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function filterGallery(category) {
+            currentGalleryFilter = category;
+
+            const buttons = document.querySelectorAll('.gallery-filter-btn');
+            buttons.forEach(btn => {
+                const btnCategory = btn.getAttribute('data-filter');
+                if (btnCategory === category) {
+                    btn.className = "gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan text-white shadow-[0_0_20px_rgba(168,85,247,0.45)] flex items-center gap-2 scale-105";
+                } else {
+                    btn.className = "gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonPurple/60 flex items-center gap-2";
+                }
+            });
+
+            renderGallery(category);
+            gsap.fromTo('#gallery-grid .gallery-card', 
+                { opacity: 0, y: 24, scale: 0.96 }, 
+                { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.06, ease: "power3.out" }
+            );
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.refresh();
+            }
+        }
+
+        updateCategoryCounts();
+        renderGallery();
+
+        // Apply saved language on initial load
+        if (currentLang !== 'en') {
+            setLanguage(currentLang);
+        }
+
+        // --------------------------------------------------
+        // C. INTERACTIVE TABS (ABOUT ME SECTION)
+        // --------------------------------------------------
+        function switchAboutTab(tabKey) {
+            const tabs = ['skills', 'software', 'process'];
+            
+            tabs.forEach(key => {
+                const btn = document.getElementById(`tab-btn-${key}`);
+                const panel = document.getElementById(`tab-panel-${key}`);
+
+                if (key === tabKey) {
+                    btn.className = "about-tab-btn group text-left px-5 py-4 rounded-2xl font-display font-bold text-base sm:text-lg transition-all duration-300 bg-white text-oled shadow-[0_0_25px_rgba(255,255,255,0.35)] flex items-center justify-between scale-[1.02]";
+                    panel.classList.remove('hidden');
+                    gsap.fromTo(panel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" });
+                } else {
+                    btn.className = "about-tab-btn group text-left px-5 py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base transition-all duration-300 glass-panel text-white hover:border-neonCyan/60 flex items-center justify-between";
+                    panel.classList.add('hidden');
+                }
+            });
+        }
+
+        // --------------------------------------------------
+        // D. PROJECT DETAIL MODAL LOGIC
+        // --------------------------------------------------
+        const modal = document.getElementById('artwork-modal');
+        const modalCard = document.getElementById('artwork-modal-card');
+
+        function openArtworkModal(id) {
+            const art = artworksData.find(item => item.id === id);
+            if (!art) return;
+
+            document.getElementById('modal-img').src = art.image;
+            document.getElementById('modal-img').alt = art.title;
+            document.getElementById('modal-category').textContent = art.category;
+            document.getElementById('modal-year').textContent = art.year;
+            document.getElementById('modal-title').textContent = art.title;
+            document.getElementById('modal-story').textContent = art.story;
+            document.getElementById('modal-software').textContent = art.software;
+            document.getElementById('modal-focus').textContent = art.focus;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modalCard.classList.remove('scale-90');
+                modalCard.classList.add('scale-100');
+            });
+        }
+
+        function closeArtworkModal() {
+            modal.classList.add('opacity-0');
+            modalCard.classList.remove('scale-100');
+            modalCard.classList.add('scale-90');
+            document.body.style.overflow = '';
+
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeArtworkModal();
+            }
+        });
+
+        // --------------------------------------------------
+        // E. HERO SOCIAL DRAWER & CUSTOM TOAST
+        // --------------------------------------------------
+        function toggleSocialDrawer() {
+            const drawer = document.getElementById('hero-social-drawer');
+            if (drawer.classList.contains('hidden')) {
+                drawer.classList.remove('hidden');
+                gsap.fromTo(drawer, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 3200);
+        }
+
+        async function handleCommissionSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span>Sending...</span><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>`;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showToast("Sent successfully! IH3TEU will get back to you via your email.");
+                    form.reset();
+                } else {
+                    const data = await response.json();
+                    if (data.errors) {
+                        showToast(data.errors.map(error => error.message).join(", "));
+                    } else {
+                        showToast("Failed to send. Please try again!");
+                    }
+                }
+            } catch (error) {
+                showToast("Network error, please check your connection!");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        // --------------------------------------------------
+        // F. GSAP SCROLLTRIGGER: MORPHING NAVBAR, PARALLAX & BACK-TO-TOP
+        // --------------------------------------------------
+        window.addEventListener('load', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const floatingNavbar = document.getElementById('floating-navbar');
+            const backToTopBtn = document.getElementById('back-to-top');
+            const heroCubes = document.querySelectorAll('.nav-cube');
+
+            ScrollTrigger.create({
+                trigger: "#hero",
+                start: "bottom 28%",
+                onEnter: () => {
+                    gsap.to(heroCubes, { scale: 0.8, opacity: 0.3, y: -30, duration: 0.4, stagger: 0.05 });
+                    gsap.to(floatingNavbar, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.45,
+                        ease: "back.out(1.6)"
+                    });
+                    backToTopBtn.classList.remove('opacity-0', 'scale-75', 'pointer-events-none');
+                },
+                onLeaveBack: () => {
+                    gsap.to(heroCubes, { scale: 1, opacity: 1, y: 0, duration: 0.4, stagger: 0.05 });
+                    gsap.to(floatingNavbar, {
+                        opacity: 0,
+                        y: -32,
+                        duration: 0.3,
+                        ease: "power2.in"
+                    });
+                    backToTopBtn.classList.add('opacity-0', 'scale-75', 'pointer-events-none');
+                }
+            });
+
+            gsap.utils.toArray('.gallery-card').forEach((card, i) => {
+                const yOffset = (i % 3 === 1) ? 35 : -20;
+                gsap.fromTo(card, 
+                    { y: yOffset, opacity: 0.85 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 92%",
+                            end: "top 35%",
+                            scrub: 0.6
+                        }
+                    }
+                );
+            });
+        });
+
+        // --------------------------------------------------
+        // G. INTERACTIVE LUMINOUS STARDUST CANVAS
+        // --------------------------------------------------
+        (function initParticlesCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            const mouse = { x: -1000, y: -1000, radius: 150 };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const palette = ['#a855f7', '#06b6d4', '#f43f5e', '#ffffff'];
+            const particleCount = Math.min(130, Math.floor((width * height) / 12000));
+            const particles = [];
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.size = Math.random() * 2.2 + 0.6;
+                    this.baseVx = (Math.random() - 0.5) * 0.35;
+                    this.baseVy = (Math.random() - 0.5) * 0.35 - 0.15;
+                    this.vx = this.baseVx;
+                    this.vy = this.baseVy;
+                    this.color = palette[Math.floor(Math.random() * palette.length)];
+                    this.alpha = Math.random() * 0.65 + 0.2;
+                }
+                update() {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < mouse.radius && dist > 0) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        const angle = Math.atan2(dy, dx);
+                        this.vx += Math.cos(angle) * force * 0.45;
+                        this.vy += Math.sin(angle) * force * 0.45;
+                    }
+
+                    this.vx += (this.baseVx - this.vx) * 0.04;
+                    this.vy += (this.baseVy - this.vy) * 0.04;
+
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0) this.x = width;
+                    if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height;
+                    if (this.y > height) this.y = 0;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
+        })();
+    </script>
+</body>
+</html>
