@@ -76,6 +76,37 @@
             overflow-x: hidden;
         }
 
+        /* =========================================================
+           NATIVE HARDWARE SVG CURSORS (100% ZERO-LAG & NEVER DISAPPEARS)
+           Rendered directly by OS/Browser Compositor — Immune to DOM/Image bugs
+        ========================================================== */
+        @media (pointer: fine) {
+            /* 1. Default Cursor: Cyber Stylus Arrow (Cyan/Rose) */
+            body {
+                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M3 3L11.5 24L14.8 14.8L24 11.5L3 3Z' fill='%2308080a' stroke='%2306b6d4' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M3 3L14.8 14.8' stroke='%23f43f5e' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='3' cy='3' r='2' fill='%23ffffff'/%3E%3C/svg%3E") 3 3, auto;
+            }
+
+            /* 2. Interactive Buttons, Links & Cubes: Energized Rose/Purple Pointer */
+            a, button, [role="button"], select, .cursor-pointer, .nav-cube {
+                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M3 3L11.5 24L14.8 14.8L24 11.5L3 3Z' fill='%23f43f5e' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round'/%3E%3Ccircle cx='3' cy='3' r='2.5' fill='%2306b6d4'/%3E%3Ccircle cx='19' cy='19' r='3' fill='none' stroke='%23a855f7' stroke-width='1.5'/%3E%3C/svg%3E") 3 3, pointer !important;
+            }
+
+            /* 3. Artwork & External Images: Precision Diamond Viewfinder Reticle */
+            [data-cursor="artwork"], [data-cursor="artwork"] img {
+                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 3L29 16L16 29L3 16Z' fill='rgba(8,8,10,0.55)' stroke='%2306b6d4' stroke-width='1.8'/%3E%3Cpath d='M10 16H22M16 10V22' stroke='%23f43f5e' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23ffffff'/%3E%3C/svg%3E") 16 16, zoom-in !important;
+            }
+
+            /* 4. Close Modal Area: Rose X-Reticle */
+            [data-cursor="close"] {
+                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Ccircle cx='14' cy='14' r='11' fill='rgba(8,8,10,0.75)' stroke='%23f43f5e' stroke-width='2'/%3E%3Cpath d='M10 10L18 18M18 10L10 18' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 14 14, pointer !important;
+            }
+
+            /* 5. Text Inputs & Textarea: Cyber I-Beam */
+            input, textarea {
+                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M9 4H15M9 20H15M12 4V20' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, text !important;
+            }
+        }
+
         /* Neon Glow Utilities */
         .glow-purple {
             box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.5), inset 0 0 15px -5px rgba(168, 85, 247, 0.3);
@@ -102,7 +133,7 @@
 
         /* Staggered Square Buttons Custom Hover */
         .nav-cube {
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
         }
         .nav-cube:hover {
             transform: translateY(-6px) scale(1.06);
@@ -116,9 +147,96 @@
             fill: #ffffff;
             text-shadow: 0 0 15px rgba(244, 63, 94, 0.8);
         }
+
+        /* ==========================================
+           COMPANION CYBER HUD BADGE FOLLOWER
+           (Purely decorative HUD label — Never hides hardware cursor)
+        =========================================== */
+        #custom-cursor-wrapper {
+            pointer-events: none;
+            z-index: 9999;
+        }
+        @media (pointer: coarse) {
+            #custom-cursor-wrapper {
+                display: none !important;
+            }
+        }
+
+        #cursor-pos {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            will-change: transform;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-neonRose selection:text-white relative">
+
+    <!-- ==========================================
+         0A. COMPANION CYBER HUD FOLLOWER
+         (Works alongside Native Hardware SVG Cursor — Impossible to lose cursor)
+    =========================================== -->
+    <div id="custom-cursor-wrapper" class="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+        <div id="cursor-pos" style="transform: translate3d(-100px, -100px, 0);">
+            <!-- Subtle Ambient Glow Halo + Context Action Pill -->
+            <div class="relative flex items-center justify-center">
+                <!-- Soft Cyber Ring around cursor -->
+                <div id="cursor-halo" class="w-7 h-7 -translate-x-1/2 -translate-y-1/2 rounded-full border border-neonCyan/35 bg-neonCyan/5 transition-all duration-150 pointer-events-none"></div>
+                
+                <!-- Floating Context Pill Tag (Appears on interactive targets) -->
+                <div id="cursor-badge" class="absolute left-4 top-3 px-2 py-0.5 rounded-md bg-oled/95 border border-neonCyan text-[9px] font-display font-bold uppercase tracking-widest text-white whitespace-nowrap shadow-[0_0_15px_rgba(6,182,212,0.5)] opacity-0 scale-75 transition-all duration-150 pointer-events-none">
+                    <span id="cursor-label">OPEN</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         0B. INTRO GENESIS OVERLAY ANIMATION
+         (Particles & Nodes morphing into Hero Elements)
+    =========================================== -->
+    <div id="intro-loader" class="fixed inset-0 z-[100] bg-oled flex items-center justify-center overflow-hidden pointer-events-auto">
+        <!-- Subtle Cyber Grid Background -->
+        <div class="absolute inset-0 opacity-15" style="background-image: radial-gradient(#a855f7 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+        <!-- Center Genesis Core Container -->
+        <div id="intro-center-stage" class="relative w-full h-full flex items-center justify-center">
+            
+            <!-- Expanding Shockwave Rings -->
+            <div id="intro-shockwave-1" class="absolute w-24 h-24 rounded-full border border-neonCyan/60 opacity-0 scale-50 pointer-events-none"></div>
+            <div id="intro-shockwave-2" class="absolute w-36 h-36 rounded-full border border-neonRose/50 opacity-0 scale-50 pointer-events-none"></div>
+
+            <!-- Morphing Avatar Core (Flies to Hero Avatar position) -->
+            <div id="intro-node-avatar" class="absolute w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 conic-neon-ring shadow-[0_0_50px_rgba(168,85,247,0.7)] flex items-center justify-center opacity-0 scale-0 z-20">
+                <div class="w-full h-full rounded-full bg-oled flex flex-col items-center justify-center overflow-hidden relative">
+                    <i data-lucide="sparkles" class="w-7 h-7 text-neonRose animate-pulse"></i>
+                    <span class="font-display font-bold text-[10px] tracking-[0.2em] text-white mt-1">I.H4TE.U</span>
+                </div>
+            </div>
+
+            <!-- 4 Orbiting Energy Shards (Fly to the 4 Hero Navigation Cubes) -->
+            <div id="intro-node-cube1" class="intro-shard absolute w-11 h-11 rounded-xl bg-gradient-to-br from-neonRose to-neonCyan p-[1px] glow-rose opacity-0 scale-0 z-30 flex items-center justify-center">
+                <div class="w-full h-full bg-charcoal/95 rounded-xl flex items-center justify-center font-display font-bold text-sm text-white">1</div>
+            </div>
+            <div id="intro-node-cube2" class="intro-shard absolute w-10 h-10 rounded-xl bg-gradient-to-br from-neonPurple to-neonCyan p-[1px] glow-purple opacity-0 scale-0 z-30 flex items-center justify-center">
+                <div class="w-full h-full bg-charcoal/95 rounded-xl flex items-center justify-center font-display font-bold text-sm text-white">2</div>
+            </div>
+            <div id="intro-node-cube3" class="intro-shard absolute w-9 h-9 rounded-xl bg-gradient-to-br from-neonRose to-neonPurple p-[1px] glow-purple opacity-0 scale-0 z-30 flex items-center justify-center">
+                <div class="w-full h-full bg-charcoal/95 rounded-xl flex items-center justify-center font-display font-bold text-xs text-white">3</div>
+            </div>
+            <div id="intro-node-cube4" class="intro-shard absolute w-8 h-8 rounded-lg bg-gradient-to-br from-neonRose to-amber-500 p-[1px] glow-rose opacity-0 scale-0 z-30 flex items-center justify-center">
+                <div class="w-full h-full bg-charcoal/95 rounded-lg flex items-center justify-center font-display font-bold text-xs text-white">4</div>
+            </div>
+
+            <!-- Typography Prism Stream (Flies to Hero Heading Left Column) -->
+            <div id="intro-node-title" class="absolute px-4 py-1.5 rounded-full glass-panel border border-neonCyan/40 text-xs font-mono tracking-widest text-neonCyan uppercase opacity-0 scale-75 z-20 flex items-center gap-2 shadow-[0_0_25px_rgba(6,182,212,0.4)]">
+                <span class="w-2 h-2 rounded-full bg-neonCyan animate-ping"></span>
+                <span>SYNCHRONIZING ART ENGINE // VER 3.0</span>
+            </div>
+        </div>
+    </div>
 
     <!-- ==========================================
          1. AMBIENT LUMINOUS DUST CANVAS
@@ -132,14 +250,13 @@
 
     <!-- ==========================================
          2. MORPHING FLOATING STICKY NAVBAR
-         (Full-width flex centering wrapper fixes mobile offset)
     =========================================== -->
-    <header id="floating-navbar" class="fixed top-4 sm:top-5 inset-x-0 z-40 flex justify-center px-3 sm:px-6 pointer-events-none opacity-0 -translate-y-8 transition-none">
-        <nav class="glass-panel pointer-events-auto px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2.5 sm:gap-6 shadow-2xl shadow-black/80 border border-white/15 max-w-full">
+    <header id="floating-navbar" class="fixed top-4 sm:top-5 inset-x-0 z-40 flex justify-center px-3 sm:px-6 pointer-events-none opacity-0 -translate-y-8">
+        <nav id="floating-navbar-pill" class="glass-panel pointer-events-none px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2.5 sm:gap-6 shadow-2xl shadow-black/80 border border-white/15 max-w-full">
             <!-- Brand Logo (Compact dot on mobile, full text on sm+) -->
-            <a href="#hero" class="flex items-center gap-2 group shrink-0">
+            <a href="#hero" data-cursor="link" class="flex items-center gap-2 group shrink-0">
                 <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neonRose group-hover:bg-neonCyan transition-colors shadow-[0_0_12px_#f43f5e]"></span>
-                <span class="font-display font-bold tracking-wider text-xs sm:text-base text-white hidden sm:inline">I.H3TE.U</span>
+                <span class="font-display font-bold tracking-wider text-xs sm:text-base text-white hidden sm:inline">I.H4TE.U</span>
             </a>
 
             <div class="h-4 w-[1px] bg-white/15 shrink-0"></div>
@@ -147,25 +264,25 @@
             <!-- Centered Navigation Links -->
             <ul class="flex items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-sm font-medium text-zinc-300 whitespace-nowrap">
                 <li>
-                    <a href="#hero" class="hover:text-white transition-colors flex items-center gap-1 py-1">
+                    <a href="#hero" data-cursor="link" class="hover:text-white transition-colors flex items-center gap-1 py-1">
                         <span class="text-[9px] sm:text-[10px] font-mono text-neonRose hidden xs:inline">00</span>
                         <span data-i18n="nav.home">Home</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#works" class="hover:text-neonCyan transition-colors flex items-center gap-1 py-1">
+                    <a href="#works" data-cursor="link" class="hover:text-neonCyan transition-colors flex items-center gap-1 py-1">
                         <span class="text-[9px] sm:text-[10px] font-mono text-neonCyan hidden xs:inline">01</span>
                         <span data-i18n="nav.works">Works</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#about" class="hover:text-neonPurple transition-colors flex items-center gap-1 py-1">
+                    <a href="#about" data-cursor="link" class="hover:text-neonPurple transition-colors flex items-center gap-1 py-1">
                         <span class="text-[9px] sm:text-[10px] font-mono text-neonPurple hidden xs:inline">02</span>
                         <span data-i18n="nav.about">About</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#contact" class="hover:text-neonRose transition-colors flex items-center gap-1 py-1">
+                    <a href="#contact" data-cursor="link" class="hover:text-neonRose transition-colors flex items-center gap-1 py-1">
                         <span class="text-[9px] sm:text-[10px] font-mono text-neonRose hidden xs:inline">04</span>
                         <span data-i18n="nav.contact">Contact</span>
                     </a>
@@ -178,6 +295,7 @@
             <div class="relative shrink-0" data-lang-dropdown>
                 <button 
                     type="button" 
+                    data-cursor="action"
                     onclick="toggleLangMenu('nav-lang-menu')" 
                     aria-label="Switch Language"
                     class="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-[10px] sm:text-xs font-mono text-zinc-200 transition-colors cursor-pointer">
@@ -188,15 +306,15 @@
 
                 <!-- Dropdown Menu -->
                 <div id="nav-lang-menu" class="lang-menu-popup hidden absolute right-0 mt-2.5 w-36 glass-panel rounded-2xl p-1.5 border border-white/20 shadow-2xl z-50">
-                    <button type="button" onclick="setLanguage('en')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-white" data-lang-code="en">
+                    <button type="button" data-cursor="action" onclick="setLanguage('en', false)" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-white" data-lang-code="en">
                         <span>English</span>
                         <span class="text-[10px] text-neonCyan font-bold">EN</span>
                     </button>
-                    <button type="button" onclick="setLanguage('vi')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="vi">
+                    <button type="button" data-cursor="action" onclick="setLanguage('vi', false)" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="vi">
                         <span>Tiếng Việt</span>
                         <span class="text-[10px] text-neonRose font-bold">VI</span>
                     </button>
-                    <button type="button" onclick="setLanguage('jp')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="jp">
+                    <button type="button" data-cursor="action" onclick="setLanguage('jp', false)" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="jp">
                         <span>日本語</span>
                         <span class="text-[10px] text-neonPurple font-bold">JP</span>
                     </button>
@@ -211,7 +329,7 @@
     <section id="hero" class="relative z-10 min-h-screen w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-8 sm:pt-12 pb-20 flex flex-col justify-between">
         
         <!-- Top Status Bar + Hero Language Switcher -->
-        <div class="flex items-center justify-between gap-2 text-xs font-mono text-zinc-400">
+        <div id="hero-topbar" class="flex items-center justify-between gap-2 text-xs font-mono text-zinc-400">
             <div class="flex items-center gap-2.5 glass-panel px-3 sm:px-3.5 py-1.5 rounded-full">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                 <span class="w-2 h-2 rounded-full bg-emerald-400 absolute"></span>
@@ -225,6 +343,7 @@
                 <div class="relative" data-lang-dropdown>
                     <button 
                         type="button" 
+                        data-cursor="action"
                         onclick="toggleLangMenu('hero-lang-menu')" 
                         class="glass-panel px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs font-mono text-zinc-200 hover:border-neonCyan/50 transition-colors cursor-pointer">
                         <i data-lucide="languages" class="w-3.5 h-3.5 text-neonCyan"></i>
@@ -236,15 +355,15 @@
                         <div class="px-2.5 py-1 text-[10px] font-mono uppercase text-zinc-500 border-b border-white/10 mb-1">
                             Select Language
                         </div>
-                        <button type="button" onclick="setLanguage('en')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-white" data-lang-code="en">
+                        <button type="button" data-cursor="action" onclick="setLanguage('en', false)" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-white" data-lang-code="en">
                             <span>English</span>
                             <span class="text-[10px] text-neonCyan font-bold">EN</span>
                         </button>
-                        <button type="button" onclick="setLanguage('vi')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="vi">
+                        <button type="button" data-cursor="action" onclick="setLanguage('vi', false)" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="vi">
                             <span>Tiếng Việt</span>
                             <span class="text-[10px] text-neonRose font-bold">VI</span>
                         </button>
-                        <button type="button" onclick="setLanguage('jp')" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="jp">
+                        <button type="button" data-cursor="action" onclick="setLanguage('jp', false)" class="lang-option w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-mono text-left hover:bg-white/10 transition-colors text-zinc-300" data-lang-code="jp">
                             <span>日本語</span>
                             <span class="text-[10px] text-neonPurple font-bold">JP</span>
                         </button>
@@ -257,25 +376,25 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center my-auto py-10 sm:py-12">
             
             <!-- Left Column: Big Typography & Intro -->
-            <div class="lg:col-span-6 space-y-8 text-center lg:text-left flex flex-col items-center lg:items-start">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neonRose/10 border border-neonRose/30 text-neonRose text-xs font-mono uppercase tracking-widest">
+            <div id="hero-left-col" class="lg:col-span-6 space-y-8 text-center lg:text-left flex flex-col items-center lg:items-start">
+                <div class="hero-anim-item inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neonRose/10 border border-neonRose/30 text-neonRose text-xs font-mono uppercase tracking-widest">
                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
                     <span data-i18n="hero.badge">2D Character Artist & Illustrator</span>
                 </div>
 
-                <h1 class="font-display text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.06] text-white">
+                <h1 id="hero-main-heading" class="hero-anim-item font-display text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.06] text-white">
                     I.H4TE.U <br/>
                     <span data-i18n="hero.titleAccent" class="text-transparent bg-clip-text bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan">
                         / CONCEPT &amp; CHARACTER ART
                     </span>
                 </h1>
 
-                <p data-i18n="hero.desc" class="text-zinc-300 text-base sm:text-xl leading-relaxed max-w-xl font-normal">
+                <p data-i18n="hero.desc" class="hero-anim-item text-zinc-300 text-base sm:text-xl leading-relaxed max-w-xl font-normal">
                     Crafting expressive anime-inspired characters, dynamic silhouettes, and luminous visual storytelling with surgical line work.
                 </p>
 
                 <!-- Quick Stats / Badges -->
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-2 text-sm text-zinc-400">
+                <div class="hero-anim-item flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-2 text-sm text-zinc-400">
                     <div class="flex items-center gap-2">
                         <i data-lucide="pen-tool" class="w-4 h-4 text-neonCyan"></i>
                         <span data-i18n="hero.stat1">Stylized Anatomy</span>
@@ -295,7 +414,7 @@
             <div class="lg:col-span-6 flex flex-col items-center lg:items-end justify-center relative w-full">
                 
                 <!-- Large Circular Avatar / Hero Artwork -->
-                <div class="relative group w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 flex items-center justify-center">
+                <div id="hero-avatar-box" data-cursor="artwork" data-cursor-label="ARTIST" class="relative group w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 flex items-center justify-center">
                     <!-- Rotating Glow Ring -->
                     <div class="absolute -inset-2 rounded-full conic-neon-ring opacity-75 blur-md animate-spin-slow group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="absolute -inset-1 rounded-full conic-neon-ring animate-spin-slow"></div>
@@ -308,20 +427,20 @@
                             onerror="this.src='https://placehold.co/600x600/18181b/f43f5e?text=Hero+Artwork'"
                             class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
                         />
-                        <!-- Subtle Inner Vignette & Label -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-oled/80 via-transparent to-transparent flex items-end justify-center pb-6">
-                           
-                            </span>
-                        </div>
+                        <!-- Subtle Inner Vignette -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-oled/80 via-transparent to-transparent flex items-end justify-center pb-6"></div>
                     </div>
                 </div>
 
-                <!-- 4 Staggered Interactive Square Blocks (Centered horizontally on mobile with mx-auto) -->
+                <!-- 4 Staggered Interactive Square Blocks -->
                 <div id="hero-cubes-container" class="relative w-full max-w-[340px] sm:max-w-[440px] h-[250px] sm:h-[290px] mt-8 mx-auto lg:mx-0">
                     
                     <!-- Cube 3: Medium Square (Top-Left of cluster) - Social Links -->
                     <button 
+                        id="hero-cube-3"
                         type="button"
+                        data-cursor="cube"
+                        data-cursor-label="HUB 03"
                         onclick="toggleSocialDrawer()"
                         aria-label="Social Links"
                         class="nav-cube group absolute left-[4%] sm:left-[10%] top-[6%] w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-neonRose/90 to-neonPurple/90 p-[1px] glow-purple z-20 cursor-pointer text-left">
@@ -342,7 +461,10 @@
 
                     <!-- Cube 4: Smallest Square (Top-Center-Right of cluster) - Contact / Inquiries -->
                     <a 
+                        id="hero-cube-4"
                         href="#contact"
+                        data-cursor="cube"
+                        data-cursor-label="MAIL 04"
                         aria-label="Contact and Commissions"
                         class="nav-cube group absolute left-[43%] sm:left-[45%] top-[2%] w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-neonRose to-amber-500 p-[1px] glow-rose z-20 cursor-pointer">
                         <div class="w-full h-full bg-charcoal/90 hover:bg-neonRose/25 backdrop-blur-md rounded-xl p-2.5 flex flex-col justify-between transition-colors">
@@ -359,7 +481,10 @@
 
                     <!-- Cube 2: Large Square (Bottom-Left of cluster) - About Me -->
                     <a 
+                        id="hero-cube-2"
                         href="#about"
+                        data-cursor="cube"
+                        data-cursor-label="BIO 02"
                         aria-label="About Me Section"
                         class="nav-cube group absolute left-[8%] sm:left-[14%] bottom-[2%] w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-neonRose via-neonPurple to-neonCyan p-[1px] glow-rose z-20 cursor-pointer">
                         <div class="w-full h-full bg-charcoal/90 hover:bg-neonPurple/20 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between transition-colors">
@@ -379,7 +504,10 @@
 
                     <!-- Cube 1: Largest Primary Square (Bottom-Right of cluster) - Gallery / Works -->
                     <a 
+                        id="hero-cube-1"
                         href="#works"
+                        data-cursor="cube"
+                        data-cursor-label="WORKS 01"
                         aria-label="Gallery and Works"
                         class="nav-cube group absolute right-[2%] sm:right-[4%] bottom-[12%] w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-br from-neonRose via-pink-500 to-neonCyan p-[1.5px] glow-rose z-20 cursor-pointer">
                         <div class="w-full h-full bg-gradient-to-br from-neonRose/85 to-rose-700/90 hover:from-neonRose hover:to-neonPurple backdrop-blur-md rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between transition-all">
@@ -400,7 +528,7 @@
                     </a>
 
                     <!-- Decorative connecting cyber lines behind cubes -->
-                    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30 z-0" viewBox="0 0 400 280">
+                    <svg id="hero-cyber-lines" class="absolute inset-0 w-full h-full pointer-events-none opacity-30 z-0" viewBox="0 0 400 280">
                         <line x1="95" y1="70" x2="205" y2="45" stroke="#f43f5e" stroke-width="1" stroke-dasharray="4 4"/>
                         <line x1="95" y1="70" x2="115" y2="210" stroke="#a855f7" stroke-width="1" stroke-dasharray="4 4"/>
                         <line x1="115" y1="210" x2="310" y2="180" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4 4"/>
@@ -414,21 +542,21 @@
                         <span class="text-xs font-mono uppercase tracking-wider text-neonPurple flex items-center gap-1.5">
                             <i data-lucide="radio" class="w-3.5 h-3.5"></i> Official Artist Networks
                         </span>
-                        <button onclick="toggleSocialDrawer()" class="text-zinc-400 hover:text-white">
+                        <button data-cursor="action" onclick="toggleSocialDrawer()" class="text-zinc-400 hover:text-white">
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-semibold">
-                        <a href="https://www.facebook.com/fb.hennessy" target="_blank" rel="noopener noreferrer" onclick="showToast('Opening Facebook Profile...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonCyan/20 hover:text-neonCyan border border-white/10 transition-all">
+                        <a href="https://www.facebook.com/fb.hennessy" target="_blank" rel="noopener noreferrer" data-cursor="link" onclick="showToast('Opening Facebook Profile...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonCyan/20 hover:text-neonCyan border border-white/10 transition-all">
                             <i data-lucide="palette" class="w-3.5 h-3.5"></i> Facebook
                         </a>
-                        <a href="#contact" onclick="showToast('Opening X (Twitter) Feed...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonPurple/20 hover:text-neonPurple border border-white/10 transition-all">
+                        <a href="#contact" data-cursor="link" onclick="showToast('Opening X (Twitter) Feed...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonPurple/20 hover:text-neonPurple border border-white/10 transition-all">
                             <i data-lucide="twitter" class="w-3.5 h-3.5"></i> X / Twitter
                         </a>
-                        <a href="#contact" onclick="showToast('Opening Pixiv Illustrations...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonRose/20 hover:text-neonRose border border-white/10 transition-all">
+                        <a href="#contact" data-cursor="link" onclick="showToast('Opening Pixiv Illustrations...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-neonRose/20 hover:text-neonRose border border-white/10 transition-all">
                             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Pixiv
                         </a>
-                        <a href="#contact" onclick="showToast('Opening Instagram Reels...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-pink-500/20 hover:text-pink-400 border border-white/10 transition-all">
+                        <a href="#contact" data-cursor="link" onclick="showToast('Opening Instagram Reels...')" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-pink-500/20 hover:text-pink-400 border border-white/10 transition-all">
                             <i data-lucide="instagram" class="w-3.5 h-3.5"></i> Instagram
                         </a>
                     </div>
@@ -437,9 +565,9 @@
         </div>
 
         <!-- Bottom-Left Copyright & Scroll Indicator -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 text-xs text-zinc-400">
+        <div id="hero-bottom-bar" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 text-xs text-zinc-400">
             <p data-i18n="hero.rights" class="font-mono">© 2026 I.H4TE.U. All rights reserved.</p>
-            <a href="#about" class="inline-flex items-center gap-2 text-zinc-300 hover:text-neonCyan transition-colors group">
+            <a href="#about" data-cursor="link" class="inline-flex items-center gap-2 text-zinc-300 hover:text-neonCyan transition-colors group">
                 <span data-i18n="hero.scroll" class="font-mono uppercase tracking-widest text-[11px]">Scroll to synchronize</span>
                 <i data-lucide="chevrons-down" class="w-4 h-4 text-neonCyan animate-bounce"></i>
             </a>
@@ -457,7 +585,7 @@
             <div class="lg:col-span-5 flex flex-col items-center lg:items-start">
                 
                 <!-- Avatar + Curved SVG Text Wrapper -->
-                <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center mb-6">
+                <div data-cursor="artwork" data-cursor-label="PROFILE" class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center mb-6">
                     
                     <!-- Circular Avatar Image -->
                     <div class="w-52 h-52 sm:w-60 sm:h-60 rounded-full overflow-hidden border-2 border-neonRose/60 glow-rose relative z-10 bg-charcoal">
@@ -527,6 +655,8 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5" role="tablist">
                         <button 
                             type="button"
+                            data-cursor="action"
+                            data-cursor-label="TAB 01"
                             onclick="switchAboutTab('skills')"
                             id="tab-btn-skills"
                             class="about-tab-btn group text-left px-5 py-4 rounded-2xl font-display font-bold text-base sm:text-lg transition-all duration-300 bg-white text-oled shadow-[0_0_25px_rgba(255,255,255,0.35)] flex items-center justify-between">
@@ -536,6 +666,8 @@
 
                         <button 
                             type="button"
+                            data-cursor="action"
+                            data-cursor-label="TAB 02"
                             onclick="switchAboutTab('software')"
                             id="tab-btn-software"
                             class="about-tab-btn group text-left px-5 py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base transition-all duration-300 glass-panel text-white hover:border-neonCyan/60 flex items-center justify-between">
@@ -545,6 +677,8 @@
 
                         <button 
                             type="button"
+                            data-cursor="action"
+                            data-cursor-label="TAB 03"
                             onclick="switchAboutTab('process')"
                             id="tab-btn-process"
                             class="about-tab-btn group text-left px-5 py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base transition-all duration-300 glass-panel text-white hover:border-neonPurple/60 flex items-center justify-between">
@@ -678,6 +812,8 @@
         <div class="flex flex-wrap items-center gap-2.5 sm:gap-3.5 mb-12" role="tablist" aria-label="Artwork category filter">
             <button 
                 type="button"
+                data-cursor="action"
+                data-cursor-label="FILTER"
                 onclick="filterGallery('all')"
                 data-filter="all"
                 class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan text-white shadow-[0_0_20px_rgba(168,85,247,0.45)] flex items-center gap-2">
@@ -687,6 +823,8 @@
 
             <button 
                 type="button"
+                data-cursor="action"
+                data-cursor-label="FILTER"
                 onclick="filterGallery('Original Art')"
                 data-filter="Original Art"
                 class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonRose/60 flex items-center gap-2">
@@ -697,6 +835,8 @@
 
             <button 
                 type="button"
+                data-cursor="action"
+                data-cursor-label="FILTER"
                 onclick="filterGallery('Fanart')"
                 data-filter="Fanart"
                 class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonPurple/60 flex items-center gap-2">
@@ -707,6 +847,8 @@
 
             <button 
                 type="button"
+                data-cursor="action"
+                data-cursor-label="FILTER"
                 onclick="filterGallery('Commission')"
                 data-filter="Commission"
                 class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-neonCyan/60 flex items-center gap-2">
@@ -717,6 +859,8 @@
 
             <button 
                 type="button"
+                data-cursor="action"
+                data-cursor-label="FILTER"
                 onclick="filterGallery('Sketches & Studies')"
                 data-filter="Sketches & Studies"
                 class="gallery-filter-btn px-5 py-2.5 rounded-full font-display text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 glass-panel text-zinc-300 hover:text-white hover:border-amber-400/60 flex items-center gap-2">
@@ -778,16 +922,16 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label data-i18n="contact.labelName" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Name / Studio</label>
-                                <input type="text" name="name" required data-i18n-placeholder="contact.placeholderName" placeholder="e.g. Aether Games" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonCyan transition-colors" />
+                                <input type="text" name="name" data-cursor="input" required data-i18n-placeholder="contact.placeholderName" placeholder="e.g. Aether Games" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonCyan transition-colors" />
                             </div>
                             <div>
                                 <label data-i18n="contact.labelEmail" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Your Email</label>
-                                <input type="email" name="email" required placeholder="you@domain.com" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonCyan transition-colors" />
+                                <input type="email" name="email" data-cursor="input" required placeholder="you@domain.com" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonCyan transition-colors" />
                             </div>
                         </div>
                         <div>
                             <label data-i18n="contact.labelType" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Request Type</label>
-                            <select name="commission_type" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonPurple transition-colors">
+                            <select name="commission_type" data-cursor="action" class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonPurple transition-colors">
                                 <option value="Full-Body Character Concept Sheet">Full-Body Character Concept Sheet</option>
                                 <option value="Anime Key Visual / Splash Art">Anime Key Visual / Splash Art</option>
                                 <option value="Half-Body Stylized Illustration">Half-Body Stylized Illustration</option>
@@ -796,9 +940,9 @@
                         </div>
                         <div>
                             <label data-i18n="contact.labelMessage" class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Description &amp; Details</label>
-                            <textarea name="message" rows="3" required data-i18n-placeholder="contact.placeholderMessage" placeholder="Describe character concept, personality, outfit..." class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonRose transition-colors"></textarea>
+                            <textarea name="message" rows="3" data-cursor="input" required data-i18n-placeholder="contact.placeholderMessage" placeholder="Describe character concept, personality, outfit..." class="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white text-sm focus:outline-none focus:border-neonRose transition-colors"></textarea>
                         </div>
-                        <button type="submit" id="submit-btn" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan text-white font-display font-bold text-sm tracking-wide hover:opacity-95 transition-opacity shadow-lg shadow-neonPurple/25 flex items-center justify-center gap-2 cursor-pointer">
+                        <button type="submit" id="submit-btn" data-cursor="send" data-cursor-label="SEND" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-neonRose via-neonPurple to-neonCyan text-white font-display font-bold text-sm tracking-wide hover:opacity-95 transition-opacity shadow-lg shadow-neonPurple/25 flex items-center justify-center gap-2 cursor-pointer">
                             <span data-i18n="contact.submitBtn">Send Commission Request</span>
                             <i data-lucide="send" class="w-4 h-4"></i>
                         </button>
@@ -813,7 +957,7 @@
     =========================================== -->
     <div id="artwork-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-xl opacity-0 transition-opacity duration-300">
         <!-- Modal Backdrop Click to Close -->
-        <div onclick="closeArtworkModal()" class="absolute inset-0 cursor-pointer"></div>
+        <div onclick="closeArtworkModal()" data-cursor="close" data-cursor-label="CLOSE" class="absolute inset-0 cursor-pointer"></div>
 
         <!-- Modal Dialog Container -->
         <div id="artwork-modal-card" class="relative z-10 w-full max-w-5xl glass-panel rounded-3xl overflow-hidden border border-white/20 shadow-2xl transform scale-90 transition-transform duration-300 max-h-[90vh] flex flex-col lg:flex-row">
@@ -821,6 +965,8 @@
             <!-- Close Button -->
             <button 
                 onclick="closeArtworkModal()" 
+                data-cursor="close"
+                data-cursor-label="ESC"
                 aria-label="Close modal"
                 class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-oled/80 hover:bg-neonRose text-white border border-white/20 flex items-center justify-center transition-colors">
                 <i data-lucide="x" class="w-5 h-5"></i>
@@ -862,10 +1008,10 @@
                 </div>
 
                 <div class="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-                    <button onclick="closeArtworkModal()" data-i18n="modal.close" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-mono uppercase tracking-wider text-white transition-colors">
+                    <button onclick="closeArtworkModal()" data-cursor="close" data-i18n="modal.close" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-mono uppercase tracking-wider text-white transition-colors">
                         Close Preview
                     </button>
-                    <a href="#contact" onclick="closeArtworkModal()" class="px-5 py-2.5 rounded-xl bg-neonRose hover:bg-rose-600 text-xs font-bold uppercase tracking-wider text-white transition-colors flex items-center gap-1.5">
+                    <a href="#contact" onclick="closeArtworkModal()" data-cursor="send" data-cursor-label="ORDER" class="px-5 py-2.5 rounded-xl bg-neonRose hover:bg-rose-600 text-xs font-bold uppercase tracking-wider text-white transition-colors flex items-center gap-1.5">
                         <span data-i18n="modal.request">Request Similar Style</span>
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
@@ -879,14 +1025,16 @@
     =========================================== -->
     <button 
         id="back-to-top" 
+        data-cursor="action"
+        data-cursor-label="TOP"
         onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
         aria-label="Scroll back to top"
         class="fixed bottom-8 right-8 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full glass-panel border border-neonCyan/40 text-white flex items-center justify-center shadow-lg glow-cyan opacity-0 scale-75 pointer-events-none transition-all duration-300 hover:scale-110 hover:border-neonRose group">
         <i data-lucide="arrow-up" class="w-5 h-5 text-neonCyan group-hover:text-neonRose group-hover:-translate-y-0.5 transition-all"></i>
     </button>
 
-    <!-- Custom Notification Toast -->
-    <div id="toast-notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300 glass-panel px-5 py-3 rounded-full border border-neonCyan/50 text-xs sm:text-sm font-medium text-white shadow-2xl flex items-center gap-2.5">
+    <!-- Custom Notification Toast (Controlled cleanly via GSAP to prevent stuck states) -->
+    <div id="toast-notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-6 glass-panel px-5 py-3 rounded-full border border-neonCyan/50 text-xs sm:text-sm font-medium text-white shadow-2xl flex items-center gap-2.5">
         <span class="w-2 h-2 rounded-full bg-neonCyan animate-ping"></span>
         <span id="toast-message">Action completed</span>
     </div>
@@ -898,9 +1046,13 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
+        // Register GSAP ScrollTrigger immediately so it never misses initialization
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+
         // --------------------------------------------------
         // A. MULTI-LANGUAGE (i18n) ARCHITECTURE
-        // Easy to expand: Simply add new keys or a new language object (e.g., 'kr', 'fr')
         // --------------------------------------------------
         const translations = {
             en: {
@@ -1048,7 +1200,7 @@
                 "hero.stat3": "キャラクター三面図",
                 "hero.featuredLabel": "注目作品 // 2026",
                 "hero.rights": "© 2026 I.H4TE.U. All rights reserved.",
-                "hero.scroll": "スクロールして 탐색",
+                "hero.scroll": "スクロールして探索",
                 "cube.social": "SNSリンク",
                 "cube.contact": "お問い合わせ",
                 "cube.about": "私について",
@@ -1118,7 +1270,12 @@
             }
         });
 
-        function setLanguage(langCode) {
+        /**
+         * Switches language across the entire page.
+         * @param {string} langCode - 'en' | 'vi' | 'jp'
+         * @param {boolean} silent - When true (e.g. on initial page load), suppresses the toast notification.
+         */
+        function setLanguage(langCode, silent = false) {
             if (!translations[langCode]) return;
             currentLang = langCode;
             localStorage.setItem('portfolio_lang', langCode);
@@ -1134,7 +1291,7 @@
                 }
             });
 
-            // 2. Update all input/textarea placeholders with data-i18n-placeholder
+            // 2. Update all input/textarea placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if (dict[key]) {
@@ -1165,8 +1322,18 @@
             // 6. Close dropdown menus
             document.querySelectorAll('.lang-menu-popup').forEach(menu => menu.classList.add('hidden'));
 
-            const langNames = { en: 'English (EN)', vi: 'Tiếng Việt (VI)', jp: '日本語 (JP)' };
-            showToast(`Language: ${langNames[langCode]}`);
+            // 7. Recalculate ScrollTrigger & Navbar visibility because text length changes section height
+            requestAnimationFrame(() => {
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.refresh();
+                }
+                syncNavbarVisibilityOnScroll();
+            });
+
+            if (!silent) {
+                const langNames = { en: 'English (EN)', vi: 'Tiếng Việt (VI)', jp: '日本語 (JP)' };
+                showToast(`Language: ${langNames[langCode]}`);
+            }
         }
 
         // --------------------------------------------------
@@ -1291,6 +1458,8 @@
             galleryGrid.innerHTML = filteredArtworks.map((art, index) => `
                 <article 
                     onclick="openArtworkModal(${art.id})"
+                    data-cursor="artwork"
+                    data-cursor-label="INSPECT"
                     data-speed="${index % 2 === 0 ? '0.95' : '1.05'}"
                     class="gallery-card group relative rounded-3xl overflow-hidden glass-panel border border-white/10 hover:border-neonPurple/60 cursor-pointer transition-all duration-500 flex flex-col">
                     
@@ -1351,14 +1520,6 @@
             if (typeof ScrollTrigger !== 'undefined') {
                 ScrollTrigger.refresh();
             }
-        }
-
-        updateCategoryCounts();
-        renderGallery();
-
-        // Apply saved language on initial load
-        if (currentLang !== 'en') {
-            setLanguage(currentLang);
         }
 
         // --------------------------------------------------
@@ -1431,7 +1592,7 @@
         });
 
         // --------------------------------------------------
-        // E. HERO SOCIAL DRAWER & CUSTOM TOAST
+        // E. HERO SOCIAL DRAWER & BULLETPROOF GSAP TOAST
         // --------------------------------------------------
         function toggleSocialDrawer() {
             const drawer = document.getElementById('hero-social-drawer');
@@ -1443,16 +1604,38 @@
             }
         }
 
-        let toastTimeout;
+        let toastTimer = null;
         function showToast(message) {
             const toast = document.getElementById('toast-notification');
             const msgEl = document.getElementById('toast-message');
+            if (!toast || !msgEl) return;
+
             msgEl.textContent = message;
-            toast.classList.remove('opacity-0', 'translate-y-4');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-4');
-            }, 3200);
+
+            // Clear any existing timer and active GSAP tweens on the toast so it never gets stuck
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+                toastTimer = null;
+            }
+            gsap.killTweensOf(toast);
+
+            gsap.to(toast, {
+                opacity: 1,
+                y: 0,
+                duration: 0.32,
+                ease: "power3.out",
+                overwrite: true
+            });
+
+            toastTimer = setTimeout(() => {
+                gsap.to(toast, {
+                    opacity: 0,
+                    y: 24,
+                    duration: 0.35,
+                    ease: "power2.in",
+                    overwrite: true
+                });
+            }, 2800);
         }
 
         async function handleCommissionSubmit(event) {
@@ -1477,7 +1660,7 @@
                 });
 
                 if (response.ok) {
-                    showToast("Sent successfully! IH3TEU will get back to you via your email.");
+                    showToast("Sent successfully! I.H4TE.U will get back to you via your email.");
                     form.reset();
                 } else {
                     const data = await response.json();
@@ -1497,61 +1680,417 @@
         }
 
         // --------------------------------------------------
-        // F. GSAP SCROLLTRIGGER: MORPHING NAVBAR, PARALLAX & BACK-TO-TOP
+        // F. RELIABLE NAVBAR SCROLL CONTROLLER (FIXES MISSING NAVBAR BUG)
+        // Uses direct bounding-box check on scroll + resize so even if external
+        // images hang or language switches alter height, navbar ALWAYS appears past Hero.
         // --------------------------------------------------
-        window.addEventListener('load', () => {
-            gsap.registerPlugin(ScrollTrigger);
+        let isNavbarVisible = false;
 
+        function syncNavbarVisibilityOnScroll() {
+            const heroSection = document.getElementById('hero');
             const floatingNavbar = document.getElementById('floating-navbar');
+            const floatingNavbarPill = document.getElementById('floating-navbar-pill');
             const backToTopBtn = document.getElementById('back-to-top');
             const heroCubes = document.querySelectorAll('.nav-cube');
 
-            ScrollTrigger.create({
-                trigger: "#hero",
-                start: "bottom 28%",
-                onEnter: () => {
-                    gsap.to(heroCubes, { scale: 0.8, opacity: 0.3, y: -30, duration: 0.4, stagger: 0.05 });
-                    gsap.to(floatingNavbar, {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.45,
-                        ease: "back.out(1.6)"
-                    });
+            if (!heroSection || !floatingNavbar) return;
+
+            const heroRect = heroSection.getBoundingClientRect();
+            const triggerThreshold = window.innerHeight * 0.28;
+            const shouldShow = heroRect.bottom <= triggerThreshold;
+
+            if (shouldShow && !isNavbarVisible) {
+                isNavbarVisible = true;
+                floatingNavbarPill.classList.remove('pointer-events-none');
+                floatingNavbarPill.classList.add('pointer-events-auto');
+
+                gsap.killTweensOf(floatingNavbar);
+                gsap.to(floatingNavbar, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.45,
+                    ease: "back.out(1.6)",
+                    overwrite: true
+                });
+
+                gsap.to(heroCubes, {
+                    scale: 0.85,
+                    opacity: 0.3,
+                    y: -25,
+                    duration: 0.35,
+                    stagger: 0.04,
+                    overwrite: "auto"
+                });
+
+                if (backToTopBtn) {
                     backToTopBtn.classList.remove('opacity-0', 'scale-75', 'pointer-events-none');
-                },
-                onLeaveBack: () => {
-                    gsap.to(heroCubes, { scale: 1, opacity: 1, y: 0, duration: 0.4, stagger: 0.05 });
-                    gsap.to(floatingNavbar, {
-                        opacity: 0,
-                        y: -32,
-                        duration: 0.3,
-                        ease: "power2.in"
-                    });
+                }
+            } else if (!shouldShow && isNavbarVisible) {
+                isNavbarVisible = false;
+                floatingNavbarPill.classList.remove('pointer-events-auto');
+                floatingNavbarPill.classList.add('pointer-events-none');
+
+                // Also close any open navbar language dropdown when hiding navbar
+                const navLangMenu = document.getElementById('nav-lang-menu');
+                if (navLangMenu) navLangMenu.classList.add('hidden');
+
+                gsap.killTweensOf(floatingNavbar);
+                gsap.to(floatingNavbar, {
+                    opacity: 0,
+                    y: -32,
+                    duration: 0.3,
+                    ease: "power2.in",
+                    overwrite: true
+                });
+
+                gsap.to(heroCubes, {
+                    scale: 1,
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.4,
+                    stagger: 0.04,
+                    overwrite: "auto"
+                });
+
+                if (backToTopBtn) {
                     backToTopBtn.classList.add('opacity-0', 'scale-75', 'pointer-events-none');
+                }
+            }
+        }
+
+        window.addEventListener('scroll', syncNavbarVisibilityOnScroll, { passive: true });
+        window.addEventListener('resize', syncNavbarVisibilityOnScroll, { passive: true });
+
+        // --------------------------------------------------
+        // G. FAIL-SAFE NATIVE CURSOR + HUD BADGE ENGINE
+        // Because the primary pointer is now rendered natively by the browser's
+        // hardware cursor engine (via SVG data-URIs), it can NEVER disappear
+        // when crossing external images or iframes. This script only updates
+        // the companion HUD halo & text badge.
+        // --------------------------------------------------
+        (function initCustomCursorHUD() {
+            const posEl = document.getElementById('cursor-pos');
+            const halo = document.getElementById('cursor-halo');
+            const badge = document.getElementById('cursor-badge');
+            const label = document.getElementById('cursor-label');
+
+            if (!posEl || window.matchMedia('(pointer: coarse)').matches) return;
+
+            window.addEventListener('pointermove', (e) => {
+                posEl.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+
+                const target = e.target && e.target.closest ? e.target.closest('[data-cursor], a, button, input, textarea, select') : null;
+                if (!target) {
+                    halo.className = "w-7 h-7 -translate-x-1/2 -translate-y-1/2 rounded-full border border-neonCyan/30 bg-neonCyan/5 transition-all duration-150 pointer-events-none";
+                    badge.classList.add('opacity-0', 'scale-75');
+                    badge.classList.remove('opacity-100', 'scale-100');
+                    return;
+                }
+
+                const cursorType = target.getAttribute('data-cursor') || 'link';
+                const customLabel = target.getAttribute('data-cursor-label') || '';
+
+                if (cursorType === 'cube' || cursorType === 'send') {
+                    halo.className = "w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-lg rotate-45 border border-neonRose/80 bg-neonRose/15 shadow-[0_0_15px_rgba(244,63,94,0.4)] transition-all duration-150 pointer-events-none";
+                } else if (cursorType === 'artwork') {
+                    halo.className = "w-11 h-11 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-neonCyan/80 bg-neonCyan/10 shadow-[0_0_15px_rgba(6,182,212,0.35)] transition-all duration-150 pointer-events-none";
+                } else {
+                    halo.className = "w-9 h-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-neonPurple/70 bg-neonPurple/10 transition-all duration-150 pointer-events-none";
+                }
+
+                if (customLabel) {
+                    label.textContent = customLabel;
+                    badge.classList.remove('opacity-0', 'scale-75');
+                    badge.classList.add('opacity-100', 'scale-100');
+                } else {
+                    badge.classList.add('opacity-0', 'scale-75');
+                    badge.classList.remove('opacity-100', 'scale-100');
+                }
+            }, { passive: true });
+
+            window.addEventListener('pointerdown', () => {
+                halo.style.transform = 'translate(-50%, -50%) scale(0.75)';
+            });
+            window.addEventListener('pointerup', () => {
+                halo.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        })();
+
+        // --------------------------------------------------
+        // H. INTRO GENESIS ANIMATION (ELEMENTS MORPH & DISTRIBUTE INTO HERO)
+        // --------------------------------------------------
+        function playIntroGenesisAnimation() {
+            const loader = document.getElementById('intro-loader');
+            const nodeAvatar = document.getElementById('intro-node-avatar');
+            const nodeTitle = document.getElementById('intro-node-title');
+            const nodeCube1 = document.getElementById('intro-node-cube1');
+            const nodeCube2 = document.getElementById('intro-node-cube2');
+            const nodeCube3 = document.getElementById('intro-node-cube3');
+            const nodeCube4 = document.getElementById('intro-node-cube4');
+            const shock1 = document.getElementById('intro-shockwave-1');
+            const shock2 = document.getElementById('intro-shockwave-2');
+
+            // Real Hero target elements
+            const realTopbar = document.getElementById('hero-topbar');
+            const realLeftItems = document.querySelectorAll('.hero-anim-item');
+            const realAvatar = document.getElementById('hero-avatar-box');
+            const realCube1 = document.getElementById('hero-cube-1');
+            const realCube2 = document.getElementById('hero-cube-2');
+            const realCube3 = document.getElementById('hero-cube-3');
+            const realCube4 = document.getElementById('hero-cube-4');
+            const realCyberLines = document.getElementById('hero-cyber-lines');
+            const realBottomBar = document.getElementById('hero-bottom-bar');
+            const realHeading = document.getElementById('hero-main-heading');
+
+            if (!loader) return;
+
+            // Temporarily hide real Hero elements before the intro shards land on them
+            gsap.set([realTopbar, realLeftItems, realAvatar, realCube1, realCube2, realCube3, realCube4, realCyberLines, realBottomBar], {
+                opacity: 0
+            });
+            gsap.set(realLeftItems, { y: 28 });
+            gsap.set(realAvatar, { scale: 0.78 });
+            gsap.set([realCube1, realCube2, realCube3, realCube4], { scale: 0.5 });
+
+            // Helper to compute delta X/Y from screen center to any target DOM element's center
+            function getDeltaFromCenter(el) {
+                if (!el) return { x: 0, y: 0, width: 100, height: 100 };
+                const rect = el.getBoundingClientRect();
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                return {
+                    x: (rect.left + rect.width / 2) - centerX,
+                    y: (rect.top + rect.height / 2) - centerY,
+                    width: rect.width,
+                    height: rect.height
+                };
+            }
+
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    loader.style.display = 'none';
+                    if (typeof ScrollTrigger !== 'undefined') {
+                        ScrollTrigger.refresh();
+                    }
+                    syncNavbarVisibilityOnScroll();
                 }
             });
 
-            gsap.utils.toArray('.gallery-card').forEach((card, i) => {
-                const yOffset = (i % 3 === 1) ? 35 : -20;
-                gsap.fromTo(card, 
-                    { y: yOffset, opacity: 0.85 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: card,
-                            start: "top 92%",
-                            end: "top 35%",
-                            scrub: 0.6
+            // Phase 1: Ignite the central Genesis Core & Shockwaves (0.0s -> 0.55s)
+            tl.to(nodeAvatar, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.45,
+                ease: "back.out(1.8)"
+            })
+            .to(shock1, {
+                opacity: 0.8,
+                scale: 4.5,
+                duration: 0.7,
+                ease: "power2.out"
+            }, "<0.05")
+            .to(shock1, { opacity: 0, duration: 0.25 }, "-=0.25")
+            .to(shock2, {
+                opacity: 0.6,
+                scale: 6,
+                duration: 0.8,
+                ease: "power2.out"
+            }, "<0.1")
+            .to(shock2, { opacity: 0, duration: 0.25 }, "-=0.25")
+
+            // Phase 2: Spawn the 4 geometric Cube shards + Title prism in an orbital formation around the core
+            .to(nodeTitle, {
+                opacity: 1,
+                scale: 1,
+                y: -115,
+                duration: 0.4,
+                ease: "back.out(1.6)"
+            }, "-=0.55")
+            .to(nodeCube1, {
+                opacity: 1,
+                scale: 1,
+                x: 110,
+                y: 65,
+                rotation: 12,
+                duration: 0.42,
+                ease: "back.out(2)"
+            }, "<0.04")
+            .to(nodeCube2, {
+                opacity: 1,
+                scale: 1,
+                x: -110,
+                y: 65,
+                rotation: -14,
+                duration: 0.42,
+                ease: "back.out(2)"
+            }, "<0.04")
+            .to(nodeCube3, {
+                opacity: 1,
+                scale: 1,
+                x: -95,
+                y: -55,
+                rotation: -8,
+                duration: 0.42,
+                ease: "back.out(2)"
+            }, "<0.04")
+            .to(nodeCube4, {
+                opacity: 1,
+                scale: 1,
+                x: 95,
+                y: -55,
+                rotation: 10,
+                duration: 0.42,
+                ease: "back.out(2)"
+            }, "<0.04")
+
+            // Phase 3: Distribute & Morph each shard directly to its exact Hero Section coordinates!
+            .add(() => {
+                const avatarTarget = getDeltaFromCenter(realAvatar);
+                const titleTarget = getDeltaFromCenter(realHeading);
+                const c1Target = getDeltaFromCenter(realCube1);
+                const c2Target = getDeltaFromCenter(realCube2);
+                const c3Target = getDeltaFromCenter(realCube3);
+                const c4Target = getDeltaFromCenter(realCube4);
+
+                gsap.to(nodeAvatar, {
+                    x: avatarTarget.x,
+                    y: avatarTarget.y,
+                    width: avatarTarget.width,
+                    height: avatarTarget.height,
+                    opacity: 0,
+                    duration: 0.72,
+                    ease: "expo.inOut"
+                });
+
+                gsap.to(nodeTitle, {
+                    x: titleTarget.x,
+                    y: titleTarget.y,
+                    scale: 1.15,
+                    opacity: 0,
+                    duration: 0.65,
+                    ease: "expo.inOut"
+                });
+
+                gsap.to(nodeCube1, {
+                    x: c1Target.x,
+                    y: c1Target.y,
+                    width: c1Target.width,
+                    height: c1Target.height,
+                    rotation: 0,
+                    opacity: 0,
+                    duration: 0.75,
+                    ease: "expo.inOut"
+                });
+
+                gsap.to(nodeCube2, {
+                    x: c2Target.x,
+                    y: c2Target.y,
+                    width: c2Target.width,
+                    height: c2Target.height,
+                    rotation: 0,
+                    opacity: 0,
+                    duration: 0.75,
+                    ease: "expo.inOut"
+                });
+
+                gsap.to(nodeCube3, {
+                    x: c3Target.x,
+                    y: c3Target.y,
+                    width: c3Target.width,
+                    height: c3Target.height,
+                    rotation: 0,
+                    opacity: 0,
+                    duration: 0.75,
+                    ease: "expo.inOut"
+                });
+
+                gsap.to(nodeCube4, {
+                    x: c4Target.x,
+                    y: c4Target.y,
+                    width: c4Target.width,
+                    height: c4Target.height,
+                    rotation: 0,
+                    opacity: 0,
+                    duration: 0.75,
+                    ease: "expo.inOut"
+                });
+            }, "+=0.12")
+
+            // Dissolve the dark intro backdrop while revealing the Hero elements right as the shards arrive
+            .to(loader, {
+                backgroundColor: "rgba(8, 8, 10, 0)",
+                duration: 0.55,
+                ease: "power2.inOut"
+            }, "+=0.15")
+            .to(realAvatar, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.4)"
+            }, "-=0.35")
+            .to([realCube3, realCube4, realCube2, realCube1], {
+                opacity: 1,
+                scale: 1,
+                duration: 0.55,
+                stagger: 0.06,
+                ease: "back.out(1.7)"
+            }, "-=0.45")
+            .to(realLeftItems, {
+                opacity: 1,
+                y: 0,
+                duration: 0.55,
+                stagger: 0.08,
+                ease: "power3.out"
+            }, "-=0.5")
+            .to([realTopbar, realCyberLines, realBottomBar], {
+                opacity: 1,
+                duration: 0.45,
+                ease: "power2.out"
+            }, "-=0.35");
+        }
+
+        // --------------------------------------------------
+        // I. INITIALIZATION ON DOM READY
+        // --------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCategoryCounts();
+            renderGallery();
+
+            // Apply saved language silently on initial load (silent = true prevents stuck initial toast)
+            if (currentLang !== 'en') {
+                setLanguage(currentLang, true);
+            }
+
+            // Launch Intro Genesis Animation
+            playIntroGenesisAnimation();
+
+            // Setup Gallery Card Parallax
+            if (typeof ScrollTrigger !== 'undefined') {
+                gsap.utils.toArray('.gallery-card').forEach((card, i) => {
+                    const yOffset = (i % 3 === 1) ? 35 : -20;
+                    gsap.fromTo(card, 
+                        { y: yOffset, opacity: 0.85 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: card,
+                                start: "top 92%",
+                                end: "top 35%",
+                                scrub: 0.6
+                            }
                         }
-                    }
-                );
-            });
+                    );
+                });
+            }
+
+            // Check navbar state immediately in case page was reloaded mid-scroll
+            syncNavbarVisibilityOnScroll();
         });
 
         // --------------------------------------------------
-        // G. INTERACTIVE LUMINOUS STARDUST CANVAS
+        // J. INTERACTIVE LUMINOUS STARDUST CANVAS
         // --------------------------------------------------
         (function initParticlesCanvas() {
             const canvas = document.getElementById('bg-canvas');
